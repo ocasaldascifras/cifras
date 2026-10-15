@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Importar dados iniciais</title>
+<style>
+body{margin:0;background:#F6EFE3;color:#2A1C10;font:16px/1.5 system-ui,sans-serif;padding:32px max(16px,env(safe-area-inset-left,0px))}
+.w{max-width:600px;margin:0 auto;display:grid;gap:14px}h1{font:700 28px Georgia,serif;color:#5C3B1E;margin:0}
+button{background:#5C3B1E;color:#F6EFE3;border:0;border-radius:10px;padding:12px 18px;font:600 15px system-ui;cursor:pointer}button:disabled{opacity:.5}
+.warn{background:#FBEBC8;color:#B7791F;border-radius:8px;padding:10px 12px;font-size:14px}pre{background:#FFFBF4;border:1px solid #E5D8C4;border-radius:8px;padding:10px;white-space:pre-wrap}
+</style></head><body><div class="w">
+<h1>Importar dados iniciais</h1>
+<div class="warn">Use só na primeira vez. Importar de novo substitui o que estiver igual no banco, inclusive baixas feitas depois. O arquivo seed-dados-iniciais.json tem dados dos clientes: guarde no seu computador e não suba para o GitHub.</div>
+<input type="file" id="f" accept=".json">
+<button id="go" disabled>Importar</button>
+<pre id="log">Escolha o arquivo seed-dados-iniciais.json.</pre></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-shim.js"></script>
+<script>
+var docs=null,log=function(t){document.getElementById('log').textContent=t};
+document.getElementById('f').onchange=function(e){var r=new FileReader();r.onload=function(){try{docs=JSON.parse(r.result).docs;document.getElementById('go').disabled=false;log(docs.length+' documentos prontos para importar.')}catch(x){log('Arquivo inválido.')}};r.readAsText(e.target.files[0])};
+document.getElementById('go').onclick=async function(){
+  await window.claude.use('user');
+  if(window.CC_ROLE!=='admin'){log('Só a administração pode importar.');return}
+  this.disabled=true;var fs=window.CC_FS,n=0;
+  try{for(var i=0;i<docs.length;i+=400){var b=fs.batch();docs.slice(i,i+400).forEach(function(d){b.set(fs.doc(d.path),d.data)});await b.commit();n+=Math.min(400,docs.length-i);log(n+' de '+docs.length+'…')}
+  log('Pronto. '+n+' documentos importados. Abra Clientes e Gestão para conferir.')}catch(e){log('Erro: '+(e.message||e))}
+};
+</script></body></html>

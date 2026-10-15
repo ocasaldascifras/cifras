@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>O Casal das Cifras</title>
+<style>
+body{margin:0;background:#FCFAF6;color:#3D2B1F;font:16px/1.5 system-ui,sans-serif;padding:32px max(16px,env(safe-area-inset-left,0px))}
+.w{max-width:560px;margin:0 auto;display:grid;gap:16px}h1{font:700 32px Georgia,serif;color:#3D2B1F;margin:0}
+a.c{display:block;background:#FFFFFF;border:1px solid #DDD1BE;border-radius:12px;padding:18px;text-decoration:none;color:inherit}
+a.c b{display:block;font:600 20px Georgia,serif;color:#3D2B1F}a.c span{color:#8B7355;font-size:14px}
+</style></head><body>
+<div class="w"><img src="logo.webp" alt="O Casal das Cifras" style="width:min(300px,80%)"><p id="t">Entrando…</p>
+<div id="hub" hidden>
+<a class="c" href="clientes.html"><b>Clientes</b><span>Orçamento, lançamentos, investimentos e objetivos de cada cliente.</span></a>
+<a class="c" href="gestao.html" style="margin-top:12px"><b>Gestão da empresa</b><span>Contratos, atendimentos, cobranças e despesas.</span></a>
+<a class="c" href="importar.html" style="margin-top:12px"><b>Importar dados iniciais</b><span>Só na primeira vez, para trazer o que já está cadastrado.</span></a>
+</div></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-shim.js"></script>
+<script>
+window.claude.use('user').then(function(){
+  if(window.CC_ROLE==='admin'){document.getElementById('t').textContent='Escolha por onde começar.';document.getElementById('hub').hidden=false}
+  else location.replace('clientes.html');
+});
+</script></body></html>
