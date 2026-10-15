@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Conta Google com e-mail verificado.
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    // Quem administra (vê e altera tudo). Troque/adicione e-mails aqui e em firebase-config.js.
+    function isAdmin() {
+      return signedIn() && request.auth.token.email in ['ocasaldascifras@gmail.com', 'thalitaaladio.contato@gmail.com'];
+    }
+
+    // O cliente é dono quando o e-mail dele está na lista "emails" do documento do cliente.
+    function owns(cid) {
+      return signedIn() &&
+        request.auth.token.email in get(/databases/$(database)/documents/clients/$(cid)).data.emails;
+    }
+
+    match /clients/{cid} {
+      allow read: if isAdmin() ||
+        (signedIn() && request.auth.token.email in resource.data.emails);
+      allow write: if isAdmin();
+
+      // categorias, lançamentos, investimentos, objetivos e controle do pré-lançamento
+      match /{col}/{id} {
+        allow read, write: if isAdmin() || owns(cid);
+      }
+    }
+
+    // Todo o resto (gestão da empresa, notas privadas, regras) é só da administração.
+    match /{path=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
