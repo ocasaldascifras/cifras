@@ -192,6 +192,8 @@ input[type=file]{min-height:44px;padding:8px}
 [hidden]{display:none!important}
 .is-client #notes-card{display:none}
 #edit-client{margin-left:6px}
+@media(max-width:560px){.tbl th,.tbl td{padding:8px 3px}.tbl th{font-size:9.5px;letter-spacing:0}.tbl th.n{padding-right:2px}.tbl{table-layout:fixed}.tbl th:first-child{width:36%}.tbl th.n{width:32%}.tbl input{width:100%!important;max-width:100%;padding:6px!important}.tbl td.n,.tbl th.n{white-space:nowrap}.tbl td:first-child .btn{white-space:normal;min-height:0;padding-top:2px;padding-bottom:2px}}
+.canc-wrap{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-left:8px}.canc-wrap input{width:auto;min-height:0}
 /* ===== Premium · paleta oficial O Casal das Cifras ===== */
 :root,:root[data-theme="light"]{
   color-scheme:light;
@@ -311,7 +313,7 @@ select,input[type=text],input[type=date],input[type=month],input:not([type]),tex
     <div class="solo" id="solo" hidden><div class="r">Cliente</div><div class="n" id="solo-name"></div></div>
     <div class="who" id="who">
       <div><span class="lbl">Cliente</span><select id="client-sel" aria-label="Cliente"></select></div>
-      <button class="btn w" id="add-client" type="button">+ Cliente</button><button class="btn w" id="edit-client" type="button">Acesso</button>
+      <button class="btn w" id="add-client" type="button">+ Cliente</button><button class="btn w" id="edit-client" type="button">Acesso</button><label id="canc-wrap" class="canc-wrap"><input type="checkbox" id="show-canc"> Ver cancelados</label>
     </div>
   </header>
 
@@ -451,7 +453,7 @@ const SCOPE_LABEL={pessoal:'Pessoal',casa:'Casa',empresa:'Empresarial',tudo:'Tud
 let SOLO=true;
 
 /* ---------- estado ---------- */
-const S={bzc:[],bzr:[],bzk:[],bzf:[],bzg:[],forms:[],rem:[],ld:{},kitOpen:'',clients:[],cid:lsGet('cc-cid',''),cats:[],tx:[],inv:[],goals:[],month:curYM(),scope:lsGet('cc-scope','pessoal'),tab:lsGet('cc-tab','painel'),
+const S={showCanc:false,bzc:[],bzr:[],bzk:[],bzf:[],bzg:[],forms:[],rem:[],ld:{},kitOpen:'',clients:[],cid:lsGet('cc-cid',''),cats:[],tx:[],inv:[],goals:[],month:curYM(),scope:lsGet('cc-scope','pessoal'),tab:lsGet('cc-tab','painel'),
   mode:'loading',canWrite:true,expand:false,filter:{q:'',s:''},sim:{goal:'',pmt:null,touched:false}};
 let DB=null, unsubs=[], rafId=0, MEM={};
 const client=()=>S.clients.find(c=>c.id===S.cid)||null;
@@ -603,12 +605,12 @@ function insights(a){
 function scheduleRender(){if(rafId)return;rafId=requestAnimationFrame(()=>{rafId=0;render()})}
 function render(){
   renderChrome();
-  const fns=[renderHome,renderKit,renderNeg,renderHero,renderInsights,renderFlow,renderMix,renderCats,renderFixos,renderExtrato,renderOrc,renderInvHero,renderInvList,renderAp,renderGoals,renderSim];
+  const fns=(window.__kit?[renderHome,renderKit,renderNeg]:[]).concat([renderHero,renderInsights,renderFlow,renderMix,renderCats,renderFixos,renderExtrato,renderOrc,renderInvHero,renderInvList,renderAp,renderGoals,renderSim]);
   fns.forEach(f=>{try{f()}catch(e){console.error(f.name,e)}});
 }
 function renderChrome(){
-  const sel=$('#client-sel');const want=S.clients.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'pt-BR'));
-  const html=want.length?want.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===S.cid?' selected':'')+'>'+esc(c.name)+'</option>').join(''):'<option value="">Nenhum cliente</option>';
+  const sel=$('#client-sel');const want=S.clients.filter(c=>c.status!=='cancelado'||S.showCanc||c.id===S.cid).sort((a,b)=>String(a.name).localeCompare(String(b.name),'pt-BR'));
+  const html=want.length?want.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===S.cid?' selected':'')+'>'+esc(c.name)+(c.status==='cancelado'?' (cancelado)':'')+'</option>').join(''):'<option value="">Nenhum cliente</option>';
   if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}
   sel.value=S.cid;
   $('#m-label').textContent=mLong(S.month);
@@ -906,9 +908,15 @@ let delArmed=false,delCb=null;
 function armDelete(btn){if(!delArmed){delArmed=true;btn.textContent='Confirmar exclusão';return}delArmed=false;if(delCb)delCb()}
 
 const parseEmails=s=>String(s||'').split(/[,;\s]+/).map(x=>x.trim().toLowerCase()).filter(x=>x.indexOf('@')>0);
+function cancelClient(c,on){
+  const d=Object.assign({},c);delete d.id;
+  if(on){d.prevEmails=(c.emails&&c.emails.length)?c.emails:(c.prevEmails||[]);d.emails=[];d.status='cancelado';d.cancelledAt=todayISO()}
+  else{d.emails=(c.prevEmails&&c.prevEmails.length)?c.prevEmails:(c.emails||[]);d.status='ativo';delete d.prevEmails;delete d.cancelledAt}
+  return put('clients/'+c.id,d);
+}
 function sheetClientEdit(){
   const c=client();if(!c)return;
-  openSheet('Dados e acesso do cliente',field('Nome do cliente','se-name',c.name)+field('E-mails de acesso (conta Google do cliente)','se-mail',(c.emails||[]).join(', '),'cliente@gmail.com')+selF('Aba Meu negócio (para clientes autônomos)','se-biz',[['','Desativada'],['personal','Personal trainer'],['psicologo','Psicólogo(a)'],['geral','Outro negócio']],c.bizKind||'')+'<p class="hint">O cliente entra com a conta Google de um destes e-mails e vê só os próprios dados.</p>',actsStd(false),async()=>{
+  openSheet('Dados e acesso do cliente',field('Nome do cliente','se-name',c.name)+field('E-mails de acesso (conta Google do cliente)','se-mail',(c.emails||[]).join(', '),'cliente@gmail.com')+selF('Aba Meu negócio (para clientes autônomos)','se-biz',[['','Desativada'],['personal','Personal trainer'],['psicologo','Psicólogo(a)'],['geral','Outro negócio']],c.bizKind||'')+'<p class="hint">O cliente entra com a conta Google de um destes e-mails e vê só os próprios dados.</p>'+(c.status==='cancelado'?'<p class="hint"><b>Cliente cancelado'+(c.cancelledAt?' em '+esc(c.cancelledAt):'')+'.</b> O acesso está bloqueado e os dados continuam guardados.</p><button class="btn pri" type="button" id="se-react">Reativar cliente</button>':'<button class="btn danger" type="button" id="se-cancel">Cancelar cliente</button><p class="hint">Cancelar bloqueia o acesso do cliente e o tira da lista. Nada é apagado, e dá para reativar depois em "Ver cancelados".</p>'),actsStd(false),async()=>{
     const d=Object.assign({},c);delete d.id;d.name=$('#se-name').value.trim()||c.name;d.emails=parseEmails($('#se-mail').value);d.bizKind=$('#se-biz').value;
     try{await put('clients/'+c.id,d);closeSheet();toast('Acesso atualizado.')}catch(e){toast('Não foi possível salvar.')}
   });
@@ -995,7 +1003,7 @@ $('#m-today').onclick=()=>setMonth(curYM());
 $('#scope-seg').addEventListener('click',e=>{const b=e.target.closest('button[data-scope]');if(!b)return;S.scope=b.dataset.scope;lsSet('cc-scope',S.scope);scheduleRender()});
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(!b)return;S.tab=b.dataset.tab;lsSet('cc-tab',S.tab);hideTip();scheduleRender();window.scrollTo({top:0})});
 $('#client-sel').addEventListener('change',e=>selectClient(e.target.value));
-$('#add-client').onclick=()=>sheetClient();$('#edit-client').onclick=()=>sheetClientEdit();
+$('#add-client').onclick=()=>sheetClient();$('#edit-client').onclick=()=>sheetClientEdit();$('#show-canc').onchange=e=>{S.showCanc=e.target.checked;scheduleRender()};
 $('#add-cat').onclick=()=>{if(!client())return toast('Crie um cliente primeiro.');sheetCat()};
 $('#add-inv').onclick=()=>{if(!client())return toast('Crie um cliente primeiro.');sheetInv()};
 $('#add-goal').onclick=()=>{if(!client())return toast('Crie um cliente primeiro.');sheetGoal()};
@@ -1026,6 +1034,7 @@ $('#app').addEventListener('change',async e=>{
   }
 });
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.closest('[data-close]')){delArmed=false;closeSheet();return}const d=e.target.closest('[data-del]');if(d)armDelete(d)});
+$('#sheet').addEventListener('click',async e=>{const b=e.target.closest('#se-cancel,#se-react');if(!b)return;const c=client();if(!c)return;if(b.id==='se-cancel'&&b.dataset.arm!=='1'){b.dataset.arm='1';b.textContent='Confirmar cancelamento';return}try{await cancelClient(c,b.id==='se-cancel');closeSheet();toast(b.id==='se-cancel'?'Cliente cancelado. Acesso bloqueado.':'Cliente reativado.')}catch(x){toast('Não foi possível salvar.')}});
 $('#sheet-f').addEventListener('submit',e=>{e.preventDefault();if(sheetCb)sheetCb()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden){delArmed=false;closeSheet()}});
 $('#sim-goal').addEventListener('change',e=>{S.sim={goal:e.target.value,pmt:null,rate:null,touched:false};renderSim()});
@@ -1160,7 +1169,7 @@ render();
   S.mode='db';
   DB.collection('clients').onSnapshot(snap=>{
     S.clients=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
-    if(!S.clients.some(c=>c.id===S.cid)){const f=S.clients.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'pt-BR'))[0];selectClient(f?f.id:'')}
+    if(!S.clients.some(c=>c.id===S.cid&&(c.status!=='cancelado'||S.showCanc))){const f=S.clients.filter(c=>c.status!=='cancelado'||S.showCanc).sort((a,b)=>String(a.name).localeCompare(String(b.name),'pt-BR'))[0];selectClient(f?f.id:'')}
     else{scheduleRender()}
     if(S.cid&&!unsubs.length)subscribeClient();
   },err=>{console.warn(err);toast('Falha ao ler os clientes.')});
@@ -1332,12 +1341,12 @@ const BZ={
  psicologo:{prof:'Psicólogo(a)',pl:'pacientes',sg:'paciente',un:'sessões',who:'Iniciais ou nome do paciente',cats:['Aluguel de sala','Anuidade e registro profissional (CRP)','Supervisão e análise pessoal','Cursos e formação','Software e prontuário','Marketing e divulgação','Material e livros','Impostos e taxas','Outros']},
  geral:{prof:'Negócio',pl:'clientes',sg:'cliente',un:'atendimentos',who:'Nome do cliente',cats:['Aluguel','Equipamentos','Marketing','Software','Formação','Transporte','Impostos e taxas','Outros']}
 };
-const bz=()=>BZ[(client()&&client().bizKind)||'']||null;
-const bzOn=()=>!!(client()&&client().bizKind);
-const bzcfg=()=>S.bzg.find(x=>x.id==='main')||{};
-const bzIn=m=>S.bzr.filter(r=>(r.date||'').slice(0,7)===m);
-const bzPaid=m=>S.bzk.filter(k=>(k.date||'').slice(0,7)===m);
-const bzPend=m=>S.bzf.filter(f=>f.active!==false&&(!f.start||f.start<=m)&&!S.bzk.some(k=>k.id==='fx-'+f.id+'-'+m));
+function bz(){return BZ[(client()&&client().bizKind)||'']||null}
+function bzOn(){return !!(client()&&client().bizKind)}
+function bzcfg(){return S.bzg.find(x=>x.id==='main')||{}}
+function bzIn(m){return S.bzr.filter(r=>(r.date||'').slice(0,7)===m)}
+function bzPaid(m){return S.bzk.filter(k=>(k.date||'').slice(0,7)===m)}
+function bzPend(m){return S.bzf.filter(f=>f.active!==false&&(!f.start||f.start<=m)&&!S.bzk.some(k=>k.id==='fx-'+f.id+'-'+m))}
 function bzNum(m){
   const fat=sumN(bzIn(m).map(r=>r.amount)),cp=sumN(bzPaid(m).map(k=>k.amount)),pend=sumN(bzPend(m).map(f=>f.amount));
   const res=fat-cp,tax=fat*((+bzcfg().taxPct||0)/100);
@@ -1395,9 +1404,9 @@ function renderNeg(){
      return '<button class="tx" type="button" data-neg-c="'+esc(c.id)+'"><span class="gl" style="background:'+(c.status==='inativo'?'var(--muted)':'var(--amber)')+'">'+esc((c.name||'?').trim()[0].toUpperCase())+'</span><span><span class="t1">'+esc(c.name)+(c.status==='inativo'?' <span class="pill">inativo</span>':'')+'</span><span class="t2">'+esc(c.plan||'')+(c.plan?' · ':'')+(last?'último pagamento '+last.split('-').reverse().join('/'):'sem pagamentos')+'</span></span><span class="am">'+brl0(mo)+'<span class="t2" style="display:block">'+brl0(ye)+' em '+yr+'</span></span></button>'}).join(''):'<div class="empty"><b>Nenhum '+K.sg+' cadastrado</b>Cadastre quem você atende para registrar os recebimentos com um toque.</div>')+'</div>';
   el.innerHTML=h;
 }
-const bzKindPriv=()=>(client()&&client().bizKind)==='psicologo';
-const bzCats=()=>(bz()||BZ.geral).cats;
-const bzMonthDate=()=>S.month===curYM()?todayISO():S.month+'-'+pad(Math.min(28,+todayISO().slice(8)));
+function bzKindPriv(){return (client()&&client().bizKind)==='psicologo'}
+function bzCats(){return (bz()||BZ.geral).cats}
+function bzMonthDate(){return S.month===curYM()?todayISO():S.month+'-'+pad(Math.min(28,+todayISO().slice(8)))}
 function sheetBzRec(id){
   const K=bz(),r=S.bzr.find(x=>x.id===id)||{date:bzMonthDate(),method:'Pix',qtd:1,amount:'',cid:''};
   const act=S.bzc.filter(c=>c.status!=='inativo'||c.id===r.cid);
@@ -1464,5 +1473,7 @@ $('#app').addEventListener('click',e=>{
   if((m=t.closest('[data-neg-pay]')))return bzPay(m.getAttribute('data-neg-pay'));
 });
 $('#sheet').addEventListener('click',e=>{const f=e.target.closest('[data-neg-fx]');if(f){const id=f.getAttribute('data-neg-fx');closeSheet();sheetBzFixo(id)}});
+
+window.__kit=true;try{scheduleRender()}catch(e){}
 })();
 </script>
