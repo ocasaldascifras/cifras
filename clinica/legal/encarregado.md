@@ -2,7 +2,7 @@
 
 > **Minuta para revisão jurídica.** Assinar em duas vias e guardar com os documentos societários. A identidade e o contato do encarregado devem aparecer na Política de Privacidade (art. 41, § 1º, da LGPD).
 
-[RAZÃO SOCIAL], inscrita no CNPJ sob o nº 65.479.517/0001-50, com sede em [ENDEREÇO COMPLETO], neste ato representada por suas sócias, **designa** como Encarregado(a) pelo Tratamento de Dados Pessoais, nos termos do art. 41 da Lei nº 13.709/2018 e da Resolução CD/ANPD nº 18/2024:
+Thalita Aladio Lopes - MEI, inscrita no CNPJ sob o nº 65.479.517/0001-50, com sede em [ENDEREÇO COMPLETO], neste ato representada por suas sócias, **designa** como Encarregado(a) pelo Tratamento de Dados Pessoais, nos termos do art. 41 da Lei nº 13.709/2018 e da Resolução CD/ANPD nº 18/2024:
 
 **Nome:** [NOME COMPLETO]
 **CPF:** [CPF]
@@ -26,7 +26,7 @@
 [CIDADE], [DATA].
 
 ______________________________
-[RAZÃO SOCIAL] (representante legal)
+Thalita Aladio Lopes - MEI (representante legal)
 
 ______________________________
 [NOME DO ENCARREGADO] (ciente e de acordo)
