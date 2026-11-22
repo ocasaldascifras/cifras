@@ -99,6 +99,23 @@ E porque dinheiro é também emoção, hábito e história de família, o métod
 
 ---
 
+## SEÇÃO 3B · Termômetro da economia (indicadores automáticos)
+
+🎨 *Fundo creme. 5 cartões em linha (2 por linha no celular): Selic (meta), CDI, IPCA 12 meses, IPCA do mês e Ibovespa, cada um com uma frase explicando o que o número significa para o bolso. Faixa escura abaixo com o "juro real aproximado" (Selic acima do IPCA).*
+
+### Os números que mexem com o seu dinheiro, atualizados
+Investir com critério começa por entender o cenário. Estes indicadores se atualizam sozinhos, todos os dias úteis.
+
+- **Selic:** a taxa básica de juros. Ela puxa o custo das dívidas e o rendimento da renda fixa.
+- **CDI:** a referência da maioria dos CDBs, caixinhas e fundos de renda fixa.
+- **IPCA 12 meses:** a inflação oficial. Se o seu dinheiro rende menos que isso, ele está perdendo valor.
+- **IPCA do mês:** quanto os preços subiram (ou caíram) no último mês divulgado.
+- **Ibovespa:** o principal índice da Bolsa. Oscila todo dia, e é para isso que existem regras de decisão.
+
+*Fontes: Banco Central do Brasil (séries SGS 432, 4389, 13522 e 433) e B3. Atualização automática pelo GitHub Actions nos dias úteis, às 9h17 e às 18h47 (horário de Brasília). Conteúdo educativo, não é recomendação de investimento.*
+
+---
+
 ## SEÇÃO 4 · O produto e os entregáveis
 
 🎨 *Três cartões grandes lado a lado (um por jornada), cada um com número grande (01/02/03), nome, responsável e 6 marcos. Abaixo, grade de 6 ícones com "o que está incluído em todas".*
@@ -273,17 +290,16 @@ Depois dos 7 dias, você continua livre: pode encerrar **a qualquer momento**, p
 
 *"Cuidar do que é precioso."*
 
-**Thalita Aládio Lopes · Planejamento e gestão financeira**
-- Formação em Administração `[PREENCHER: titulação e instituições]`
-- Professora universitária no curso de Administração `[CONFIRMAR: ULBRA Itumbiara]`
-- Atua na interseção entre finanças comportamentais, psicologia do dinheiro e desenvolvimento humano `[PREENCHER: formações e certificações]`
-- `[PREENCHER: anos de experiência / nº de pessoas atendidas]`
+**Thalita Aládio Lopes · Planejamento e gestão financeira · fundadora**
+Une gestão, educação e psicologia para ajudar pessoas e casais a entender a própria relação com o dinheiro e transformá-la em organização e decisão.
+- *Formação:* Administração `[CONFIRMAR: graduação, pós e instituições]` · Psicologia em curso, com estudos em psicanálise `[CONFIRMAR se deve aparecer]`
+- *Atuação:* professora do curso de Administração no Instituto Luterano de Ensino Superior de Itumbiara (ULBRA) · educação financeira, finanças comportamentais e psicologia do dinheiro · autora do e-book *Dinheiro e Inconsciente* · conduz a jornada 01 e atende a 02
 
-**Bruna Fernandes de Oliveira · Proteção e Legado Financeiro**
-- `[PREENCHER: formação]`
-- `[PREENCHER: certificações e experiência em proteção, aposentadoria e sucessão]`
-- `[PREENCHER: anos de experiência / nº de pessoas atendidas]`
-- ⚠️ *Não citar OAB nem "consultoria jurídica": o posicionamento é educação financeira (ver "Validar antes de usar" no guia comercial).*
+**Bruna Fernandes de Oliveira · Proteção e Legado Financeiro · sócia**
+Ajuda pessoas e famílias a enxergar riscos, planejar a aposentadoria e deixar tudo encontrável e encaminhado.
+- *Formação:* `[PREENCHER: graduação, pós e certificações]`
+- *Atuação:* proteção financeira (riscos, apólices e cobertura) · aposentadoria e legado · conduz a jornada 03 e atende a 02 · `[PREENCHER: anos de experiência]`
+- ⚠️ *Não citar OAB nem "consultoria jurídica": o posicionamento é educação financeira.*
 
 ### Independência: por que você pode confiar no que dizemos
 - **Honorário fixo.** Não recebemos comissão de banco, corretora, seguradora ou previdência.
