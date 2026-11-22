@@ -10,9 +10,9 @@
 </head><body>
 <div class="pub" id="root" style="max-width:860px"><p class="muted"><span class="spin"></span> Carregando…</p></div>
 <script src="firebase-config.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="vendor/firebase-app-compat.js"></script>
+<script src="vendor/firebase-auth-compat.js"></script>
+<script src="vendor/firebase-firestore-compat.js"></script>
 <script src="core.js"></script>
 <script>
 /* Painel da administração: só assinaturas (e-mail e validade). Prontuários não aparecem aqui nem podem ser lidos. */
@@ -34,18 +34,22 @@
     return s.until - now < 5 * DAY ? ['Vence em breve', 'warn'] : ['Em dia', 'ok'];
   }
   function draw() {
-    var now = Date.now(), paid = subs.filter(function (s) { return !s.trial && s.until > now; }).length;
+    var now = Date.now(), P = C.billing.plans, paidList = subs.filter(function (s) { return !s.trial && s.until > now; }), paid = paidList.length;
+    var prem = paidList.filter(function (s) { return s.plan === 'premium'; }).length;
+    var mrr = paidList.reduce(function (t, s) { return t + ((P[s.plan] || P.essencial).price || 0); }, 0);
     var trial = subs.filter(function (s) { return s.trial && s.until > now; }).length, late = subs.length - paid - trial;
     var list = subs.filter(function (s) { return !q || (s.email || '').toLowerCase().indexOf(q) >= 0; })
       .sort(function (a, b) { return (a.until || 0) - (b.until || 0); });
     root.innerHTML = '<div class="head"><h1>Assinaturas</h1><button class="btn sm ghost" id="out">Sair</button></div>' +
       '<div class="kpis"><div class="kpi"><b>' + paid + '</b><span>Pagantes em dia</span></div><div class="kpi"><b>' + trial + '</b><span>Em teste grátis</span></div>' +
-      '<div class="kpi"><b>' + late + '</b><span>Vencidas</span></div><div class="kpi"><b>' + C.money(paid * C.billing.price) + '</b><span>Receita mensal (estimada)</span></div></div>' +
+      '<div class="kpi"><b>' + late + '</b><span>Vencidas</span></div><div class="kpi"><b>' + prem + '</b><span>No ' + h(P.premium.name) + ' (revisões a agendar por trimestre)</span></div><div class="kpi"><b>' + C.money(mrr) + '</b><span>Receita mensal (estimada)</span></div></div>' +
       '<input type="search" id="q" placeholder="Buscar por e-mail" aria-label="Buscar por e-mail" value="' + h(q) + '">' +
       '<div class="list">' + (list.length ? list.map(function (s) {
         var st = status(s);
-        return '<div class="item"><div class="main"><b>' + h(s.email || s.id) + '</b><span class="small muted">Válida até ' + dmy(s.until) + (s.paidAt ? ' · último pagamento ' + dmy(s.paidAt) : '') + '</span></div>' +
+        var pl = s.plan === 'premium' ? 'premium' : 'essencial';
+        return '<div class="item"><div class="main"><b>' + h(s.email || s.id) + '</b><span class="small muted">' + (s.trial ? 'Teste' : h(P[pl].name)) + ' · válida até ' + dmy(s.until) + (s.paidAt ? ' · último pagamento ' + dmy(s.paidAt) : '') + '</span></div>' +
           '<div class="row"><span class="chip ' + st[1] + '">' + st[0] + '</span>' +
+          '<select data-plan="' + s.id + '" aria-label="Plano de ' + h(s.email) + '" style="width:auto;min-height:36px;padding:6px 10px">' + ['essencial', 'premium'].map(function (k) { return '<option value="' + k + '"' + (k === pl ? ' selected' : '') + '>' + h(P[k].name) + ' · ' + C.money(P[k].price) + '</option>'; }).join('') + '</select>' +
           '<button class="btn sm pri" data-id="' + s.id + '" data-d="30">+1 mês</button><button class="btn sm" data-id="' + s.id + '" data-d="365">+1 ano</button>' +
           '<button class="btn sm dan" data-id="' + s.id + '" data-d="0">Encerrar</button></div></div>';
       }).join('') : '<p class="empty">Nenhuma assinatura ainda. Elas aparecem quando alguém cria a conta.</p>') + '</div>' +
@@ -56,7 +60,8 @@
   root.addEventListener('click', async function (e) {
     var b = e.target.closest('[data-d]'); if (!b) return;
     var s = subs.find(function (x) { return x.id === b.dataset.id; }), d = +b.dataset.d, now = Date.now();
-    var patch = d ? { until: Math.max(s.until || 0, now) + d * DAY, trial: false, paidAt: now } : { until: now - 1000 };
+    var sel = root.querySelector('[data-plan="' + s.id + '"]'), plan = sel ? sel.value : 'essencial';
+    var patch = d ? { until: Math.max(s.until || 0, now) + d * DAY, trial: false, paidAt: now, plan: plan } : { until: now - 1000 };
     if (!d && !confirm('Encerrar a assinatura de ' + s.email + '? Os dados dela continuam legíveis para ela.')) return;
     b.disabled = true;
     try { await fs.doc('subs/' + s.id).set(patch, { merge: true }); Object.assign(s, patch); draw(); }

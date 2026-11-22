@@ -9,7 +9,11 @@
 
   C.appName = window.APP_NAME || 'Meu Consultório';
   /* Assinatura: valores em firebase-config.js (window.BILLING). */
-  C.billing = Object.assign({ price: 150, annual: 0, trialDays: 14, pixType: 'email', pixKey: '', pixName: '', pixCity: '', whatsapp: '' }, window.BILLING || {});
+  C.billing = Object.assign({ trialDays: 14, pixType: 'email', pixKey: '', pixName: '', pixCity: '', whatsapp: '' }, window.BILLING || {});
+  C.billing.plans = Object.assign({
+    essencial: { name: 'Essencial', price: 99, perks: ['Agenda e página de agendamento', 'Prontuário cifrado com evolução ditada', 'Documentos com timbre', 'Financeiro com PIX e recibo'] },
+    premium: { name: 'Premium', price: 349, perks: ['Tudo do Essencial', 'Relatório financeiro do consultório', 'Revisão trimestral de 50 min com a Casal das Cifra$', 'Dúvidas financeiras pelo WhatsApp'] }
+  }, C.billing.plans || {});
   C.configured = function () {
     var c = window.FIREBASE_CONFIG || {};
     return !!(window.firebase && c.apiKey && String(c.apiKey).indexOf('COLE') < 0);
@@ -127,6 +131,17 @@
     });
   };
   /* Código de recuperação: 20 caracteres (100 bits), em grupos de 4. */
+  /* Frase secreta forte: protege o prontuário mesmo se o banco inteiro vazar (o atacante teria de adivinhar a frase). */
+  C.passProblem = function (p) {
+    p = String(p || '');
+    var words = p.trim().split(/\s+/).filter(function (w) { return w.length >= 3; }).length;
+    var kinds = [/[a-zà-ú]/, /[A-ZÀ-Ú]/, /\d/, /[^\w\sà-úÀ-Ú]/].filter(function (r) { return r.test(p); }).length;
+    if (p.length < 12) return 'Use pelo menos 12 caracteres.';
+    if (/^(.)\1+$/.test(p) || /^(?:0?123456789|abcdefghij|qwertyuiop)/i.test(p.replace(/\s/g, ''))) return 'Essa frase é fácil demais de adivinhar.';
+    if (/senha|password|psicolog|consult[oó]rio|prontu[aá]rio/i.test(p) && words < 4) return 'Evite palavras óbvias como "senha" ou "consultório".';
+    if (words < 3 && kinds < 3) return 'Use 3 ou mais palavras soltas (ex.: "janela azul do sábado") ou misture letras, números e símbolos.';
+    return '';
+  };
   C.newRecovery = function () { return C.token(20).toUpperCase().match(/.{4}/g).join('-'); };
   C.normRecovery = function (s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); };
 

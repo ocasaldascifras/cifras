@@ -139,7 +139,7 @@
       '<h1 class="brand">' + h(C.appName) + '</h1>' +
       '<p>Agenda, prontuário, documentos e financeiro do seu consultório, com página de agendamento on-line.</p>' +
       '<button class="btn pri" data-a="login">Entrar com Google</button>' +
-      '<p class="small">' + C.billing.trialDays + ' dias grátis para testar. Depois, ' + C.money(C.billing.price) + ' por mês.</p>' +
+      '<p class="small">' + C.billing.trialDays + ' dias grátis para testar. Depois, a partir de ' + C.money(C.billing.plans.essencial.price) + ' por mês.</p>' +
       '<p class="small muted">Os prontuários são cifrados no seu aparelho com uma frase secreta que só você sabe. Nem a administração do sistema consegue ler.</p>' +
       '<p id="msg" class="small err" role="alert"></p></div></div>');
   }
@@ -149,8 +149,8 @@
       '<p>Ela tranca seus prontuários. É pedida ao abrir o sistema e <b>não é a senha do Google</b>.</p>' +
       '<div class="note">Ninguém consegue recuperar essa frase por você, nem a administração. Por isso você vai receber também um código de recuperação para guardar em lugar seguro.</div>' +
       '<form id="fsetup" class="stack">' +
-      '<label><span>Frase secreta (mínimo 10 caracteres)</span><input name="p1" type="password" minlength="10" required autocomplete="new-password"></label>' +
-      '<label><span>Repita a frase</span><input name="p2" type="password" minlength="10" required autocomplete="new-password"></label>' +
+      '<label><span>Frase secreta (mínimo 12 caracteres)</span><input name="p1" type="password" minlength="12" required autocomplete="new-password"></label>' +
+      '<label><span>Repita a frase</span><input name="p2" type="password" minlength="12" required autocomplete="new-password"></label>' +
       '<p class="small muted">Dica: use 3 ou 4 palavras soltas, como "janela azul do sábado".</p>' +
       '<button class="btn pri">Criar meu cofre</button><p id="msg" class="small err" role="alert"></p></form>' +
       '<button class="btn ghost sm" data-a="logout">Sair (' + h(S.user.email) + ')</button></div></div>');
@@ -197,24 +197,74 @@
     if (!S.sub) return '';
     var d = subDays(), until = dmy(S.sub.until);
     if (!subActive()) return '<div class="subbar bad" role="status"><span><b>Assinatura vencida em ' + until + '.</b> Seus dados continuam disponíveis para ler, imprimir e baixar. Para voltar a registrar e receber agendamentos, assine.</span><button class="btn sm pri" data-a="sub">Assinar</button></div>';
-    if (S.sub.trial) return '<div class="subbar" role="status"><span>Teste grátis: ' + (d <= 1 ? 'termina hoje' : 'faltam ' + d + ' dias') + '.</span><button class="btn sm" data-a="sub">Assinar por ' + C.money(C.billing.price) + '/mês</button></div>';
+    if (S.sub.trial) return '<div class="subbar" role="status"><span>Teste grátis: ' + (d <= 1 ? 'termina hoje' : 'faltam ' + d + ' dias') + '.</span><button class="btn sm" data-a="sub">Ver planos (a partir de ' + C.money(C.billing.plans.essencial.price) + '/mês)</button></div>';
     if (d <= 5) return '<div class="subbar" role="status"><span>Sua assinatura vence em ' + until + '.</span><button class="btn sm" data-a="sub">Renovar</button></div>';
     return '';
   }
-  function subSheet() {
-    var b = C.billing, svg = '', code = '';
+  /* Planos: Essencial (sistema) e Premium (sistema + consultoria financeira do consultório). */
+  function plans() { return C.billing.plans; }
+  function planOf() { return S.sub && !S.sub.trial && S.sub.plan === 'premium' ? 'premium' : (S.sub && S.sub.trial ? 'trial' : 'essencial'); }
+  function hasPremium() { return subActive() && (planOf() === 'premium' || planOf() === 'trial'); }
+  function subSheet(pick) {
+    var b = C.billing, P = plans(), sel = pick || (S.sub && S.sub.plan) || 'premium';
+    if (!P[sel]) sel = 'essencial';
+    var pl = P[sel], svg = '', code = '';
     if (b.pixKey) {
-      code = C.pix({ key: C.pixKey(b.pixType, b.pixKey), name: b.pixName, city: b.pixCity, amount: b.price, txid: 'A' + uid().slice(0, 20) });
+      code = C.pix({ key: C.pixKey(b.pixType, b.pixKey), name: b.pixName, city: b.pixCity, amount: pl.price, txid: (sel === 'premium' ? 'P' : 'E') + uid().slice(0, 20) });
       try { var q = qrcode(0, 'M'); q.addData(code); q.make(); svg = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { }
     }
-    var msg = 'Olá! Fiz o PIX de ' + C.money(b.price) + ' da assinatura do ' + C.appName + '. Minha conta: ' + (S.user.email || '') + '. Segue o comprovante.';
-    openSheet('Assinatura · ' + C.money(b.price) + '/mês', '<div class="stack">' +
-      '<p>' + (subActive() ? (S.sub.trial ? 'Seu teste grátis vai até <b>' + dmy(S.sub.until) + '</b>.' : 'Sua assinatura vale até <b>' + dmy(S.sub.until) + '</b>.') : 'Sua assinatura venceu em <b>' + dmy(S.sub.until) + '</b>.') + '</p>' +
-      '<p class="small muted">Inclui agenda e página de agendamento, prontuário cifrado com evolução ditada, documentos com timbre, financeiro com PIX e recibo.' + (b.annual ? ' Plano anual: ' + C.money(b.annual) + '.' : '') + '</p>' +
-      (code ? '<div class="qr">' + svg + '</div><label><span>PIX copia e cola</span><textarea readonly class="mono" rows="4" style="min-height:90px">' + h(code) + '</textarea></label>' +
+    var msg = 'Olá! Fiz o PIX de ' + C.money(pl.price) + ' do plano ' + pl.name + ' do ' + C.appName + '. Minha conta: ' + (S.user.email || '') + '. Segue o comprovante.';
+    var card = function (id) {
+      var x = P[id];
+      return '<button type="button" class="plan' + (id === sel ? ' on' : '') + '" data-a="sub-plan" data-id="' + id + '" aria-pressed="' + (id === sel) + '">' +
+        '<span class="pn">' + h(x.name) + '</span><span class="pp">' + C.money(x.price) + '<small>/mês</small></span>' +
+        '<span class="pf">' + x.perks.map(h).join('<br>') + '</span></button>';
+    };
+    openSheet('Assinatura', '<div class="stack">' +
+      '<p>' + (subActive() ? (S.sub.trial ? 'Seu teste grátis vai até <b>' + dmy(S.sub.until) + '</b>.' : 'Seu plano ' + h((P[S.sub.plan] || P.essencial).name) + ' vale até <b>' + dmy(S.sub.until) + '</b>.') : 'Sua assinatura venceu em <b>' + dmy(S.sub.until) + '</b>.') + '</p>' +
+      '<div class="plans">' + card('essencial') + card('premium') + '</div>' +
+      (code ? '<p class="small"><b>PIX do plano ' + h(pl.name) + ': ' + C.money(pl.price) + '</b></p><div class="qr">' + svg + '</div><label><span>PIX copia e cola</span><textarea readonly class="mono" rows="4" style="min-height:90px">' + h(code) + '</textarea></label>' +
         '<button class="btn" data-a="copy" data-id="' + h(code) + '">Copiar código PIX</button>' : '<p class="note">Fale com a administração para receber os dados de pagamento.</p>') +
       (b.whatsapp ? '<a class="btn pri" target="_blank" rel="noopener" href="' + C.waLink(b.whatsapp, msg) + '">Enviar comprovante pelo WhatsApp</a>' : '') +
       '<p class="small muted">A liberação é feita em até 1 dia útil depois do comprovante. Seus dados nunca são apagados por falta de pagamento: você sempre pode ler e baixar tudo.</p></div>');
+  }
+  /* Relatório financeiro do consultório (Premium): só números agregados, nenhum nome ou dado clínico. */
+  function reportData(months) {
+    var off = tz(), out = [], m1 = nextMonth(monthStart(Date.now()));
+    for (var i = months; i >= 1; i--) {
+      var a = m1, b = m1; for (var k = 0; k < i; k++) a = monthStart(a - DAY); b = nextMonth(a);
+      var ap = list('appt').filter(function (x) { return x.t >= a && x.t < b; });
+      var done = ap.filter(function (x) { return x.status === 'realizado'; }).length, miss = ap.filter(function (x) { return x.status === 'falta'; }).length;
+      var recv = list('pay').filter(function (x) { return x.paid && x.paid.at >= a && x.paid.at < b; }).reduce(function (s, x) { return s + (+x.amount || 0); }, 0);
+      var billed = list('pay').filter(function (x) { return x.due >= a && x.due < b; }).reduce(function (s, x) { return s + (+x.amount || 0); }, 0);
+      var pts = {}; ap.forEach(function (x) { if (x.status === 'realizado') pts[x.pid] = 1; });
+      out.push({ label: cap(C.fmt(a, off, { month: 'short', year: '2-digit' })), done: done, miss: miss, recv: recv, billed: billed, patients: Object.keys(pts).length });
+    }
+    return out;
+  }
+  function printReport() {
+    var rows = reportData(6), tot = rows.reduce(function (s, r) { return { done: s.done + r.done, miss: s.miss + r.miss, recv: s.recv + r.recv }; }, { done: 0, miss: 0, recv: 0 });
+    var ticket = tot.done ? tot.recv / tot.done : 0, rate = (tot.done + tot.miss) ? tot.miss / (tot.done + tot.miss) : 0;
+    var open = list('pay').filter(function (x) { return !x.paid; }).reduce(function (s, x) { return s + (+x.amount || 0); }, 0);
+    var td = 'style="padding:6px 8px;border-bottom:1px solid #ddd;text-align:right"', th = 'style="padding:6px 8px;border-bottom:2px solid #4E3658;text-align:right;font:700 9pt Montserrat,Arial,sans-serif"';
+    doPrint('<h1>Relatório financeiro do consultório</h1>' +
+      '<p>Últimos 6 meses. Preparado para a consultoria Casal das Cifra$. <b>Sem nomes de pacientes nem informação clínica.</b></p>' +
+      '<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:10.5pt"><tr><th ' + th.replace('right', 'left') + '>Mês</th><th ' + th + '>Recebido</th><th ' + th + '>Cobrado</th><th ' + th + '>Sessões</th><th ' + th + '>Faltas</th><th ' + th + '>Pacientes</th></tr>' +
+      rows.map(function (r) { return '<tr><td ' + td.replace('right', 'left') + '>' + r.label + '</td><td ' + td + '>' + C.money(r.recv) + '</td><td ' + td + '>' + C.money(r.billed) + '</td><td ' + td + '>' + r.done + '</td><td ' + td + '>' + r.miss + '</td><td ' + td + '>' + r.patients + '</td></tr>'; }).join('') + '</table>' +
+      '<p><b>Recebido no período:</b> ' + C.money(tot.recv) + ' · <b>Média por mês:</b> ' + C.money(tot.recv / 6) + '</p>' +
+      '<p><b>Valor médio recebido por sessão:</b> ' + C.money(ticket) + ' · <b>Taxa de faltas:</b> ' + Math.round(rate * 100) + '%</p>' +
+      '<p><b>Receita perdida com faltas (estimada):</b> ' + C.money(tot.miss * ticket) + ' · <b>A receber hoje:</b> ' + C.money(open) + '</p>' +
+      placeDate() + signature(), 'Relatório do consultório');
+  }
+  function premiumCard() {
+    var b = C.billing, P = plans();
+    if (!hasPremium()) return '<section class="card stack"><h3>Consultoria financeira do consultório</h3><p class="small">No plano ' + h(P.premium.name) + ' você recebe o relatório do consultório e uma revisão de 50 minutos por trimestre com a equipe Casal das Cifra$: quanto sobra, quanto guardar de imposto, onde as faltas pesam.</p><div class="row"><button class="btn sm pri" data-a="sub" data-id="premium">Conhecer o ' + h(P.premium.name) + '</button></div></section>';
+    var trial = planOf() === 'trial';
+    var msg = 'Olá! Sou assinante ' + P.premium.name + ' do ' + C.appName + ' (' + (S.user.email || '') + ') e quero agendar minha revisão financeira do consultório.';
+    return '<section class="card stack"><div class="head"><h3>Sua consultoria financeira</h3><span class="chip acc">' + (trial ? 'teste do ' + h(P.premium.name) : h(P.premium.name)) + '</span></div>' +
+      '<p class="small">Gere o relatório (só números, sem nomes) e leve para a sua revisão trimestral de 50 minutos com a Casal das Cifra$.' + (trial ? ' No teste você vê o relatório; a revisão faz parte da assinatura ' + h(P.premium.name) + '.' : '') + '</p>' +
+      '<div class="row"><button class="btn sm" data-a="report">Gerar relatório do consultório</button>' +
+      (b.whatsapp && !trial ? '<a class="btn sm pri" target="_blank" rel="noopener" href="' + C.waLink(b.whatsapp, msg) + '">Agendar minha revisão</a>' : '') + '</div></section>';
   }
   function bumpIdle() {
     clearTimeout(idleTimer);
@@ -656,6 +706,7 @@
       '<div class="row"><button class="btn sm" data-a="csv">Exportar para o contador</button><button class="btn sm pri" data-a="pay-new">+ Lançamento</button></div></div>' +
       '<div class="kpis"><div class="kpi"><b class="okc">' + C.money(recv) + '</b><span>Recebido no mês</span></div><div class="kpi"><b>' + C.money(open) + '</b><span>A receber no mês</span></div>' +
       '<div class="kpi"><b class="' + (late ? 'err' : '') + '">' + C.money(late) + '</b><span>Em atraso (total)</span></div><div class="kpi"><b>' + done + ' <small class="muted">/ ' + miss + '</small></b><span>Sessões realizadas / faltas</span></div></div>' +
+      premiumCard() +
       (cfg().pix && cfg().pix.key ? '' : '<div class="note info">Cadastre sua chave PIX em <a href="#" data-a="tab" data-id="config">Consultório</a> para gerar QR Code de cobrança.</div>') +
       '<div class="list">' + (inMonth.length ? inMonth.sort(function (a, b) { return a.due - b.due; }).map(payRow).join('') : '<p class="empty">Nenhum lançamento neste mês. Ao marcar uma sessão como realizada, a cobrança entra aqui sozinha (se o paciente tiver valor cadastrado).</p>') + '</div>' +
       '<p class="small muted">Profissionais de saúde pessoa física devem emitir o recibo oficial pelo app Receita Saúde (Receita Federal). O recibo daqui serve de comprovante para o paciente e para o seu controle.</p>';
@@ -768,7 +819,7 @@
 
       '<section class="card stack"><h3>Segurança e dados</h3>' +
       '<p class="small muted">Prontuários, pacientes, documentos e lançamentos são cifrados no seu aparelho. A administração do sistema só vê texto embaralhado. Se você perder a frase secreta <b>e</b> o código de recuperação, ninguém consegue recuperar os dados.</p>' +
-      '<form id="fpass" class="stack"><label><span>Nova frase secreta</span><input type="password" name="p1" minlength="10" autocomplete="new-password" required></label><label><span>Repita</span><input type="password" name="p2" minlength="10" autocomplete="new-password" required></label><button class="btn">Trocar frase secreta</button></form>' +
+      '<form id="fpass" class="stack"><label><span>Nova frase secreta</span><input type="password" name="p1" minlength="12" autocomplete="new-password" required></label><label><span>Repita</span><input type="password" name="p2" minlength="12" autocomplete="new-password" required></label><button class="btn">Trocar frase secreta</button></form>' +
       '<label><span>Trancar sozinho depois de (minutos parado)</span><select id="idle">' + [10, 20, 30, 60].map(function (m) { return '<option' + ((c.idle || 20) === m ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select></label>' +
       '<div class="row"><button class="btn" data-a="backup">Baixar cópia dos meus dados</button><button class="btn ghost" data-a="logout">Sair da conta (' + h(S.user.email) + ')</button></div>' +
       '<p class="small muted">A cópia sai legível (sem cifra), para você guardar com segurança. O CFP pede guarda do registro documental por no mínimo 5 anos.</p></section>';
@@ -831,6 +882,7 @@
   async function changePass(form) {
     var v = fv(form);
     if (v.p1 !== v.p2) return toast('As frases não são iguais.');
+    var pp = C.passProblem(v.p1); if (pp) return toast(pp);
     var vault = await C.vaultRepass(S.pro.vault, S.dek, v.p1);
     await savePro({ vault: vault }); form.reset(); toast('Frase secreta trocada.');
   }
@@ -845,7 +897,7 @@
     login: function () { var m = $('#msg'); if (m) m.textContent = ''; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function (e) { if (m) m.textContent = e.code === 'auth/unauthorized-domain' ? 'Este endereço não está autorizado no Firebase (passo 6 do LEIA-ME).' : 'Não foi possível entrar. Tente de novo.'; }); },
     logout: function () { lock(true); auth.signOut(); },
     lock: function () { lock(); },
-    sub: subSheet,
+    sub: function (id) { subSheet(id); }, 'sub-plan': function (id) { subSheet(id); }, report: printReport,
     'unlock-rec': function () { unlockScreen(true); }, 'unlock-pass': function () { unlockScreen(false); },
     tab: function (id) { S.tab = id; if (id !== 'pacientes') S.pid = null; if (id === 'pacientes' && S.tab === id) S.pid = null; render(); scrollTo(0, 0); },
     wk: function (id) { S.week = id === '0' ? null : (S.week || weekStart(Date.now())) + (+id) * WEEK; renderMain(); },
@@ -896,6 +948,7 @@
     fsetup: async function (f, btn) {
       var v = fv(f), m = $('#msg');
       if (v.p1 !== v.p2) { m.textContent = 'As frases não são iguais.'; return; }
+      var pp = C.passProblem(v.p1); if (pp) { m.textContent = pp; return; }
       busyBtn(btn, true, 'Criando cofre');
       try {
         var r = await C.vaultCreate(v.p1);
@@ -917,8 +970,8 @@
       try {
         var r = await C.vaultOpen(S.pro.vault, v.s, rec);
         if (rec) {
-          var np = prompt('Código aceito. Crie uma nova frase secreta (mínimo 10 caracteres):') || '';
-          if (np.length >= 10) { var nv = await C.vaultRepass(S.pro.vault, r.dek, np); await fs.doc('pros/' + uid()).set({ vault: nv }, { merge: true }); S.pro.vault = nv; toast('Nova frase secreta salva.'); }
+          var np = prompt('Código aceito. Crie uma nova frase secreta (3 ou mais palavras, mínimo 12 caracteres):') || '';
+          if (!C.passProblem(np)) { var nv = await C.vaultRepass(S.pro.vault, r.dek, np); await fs.doc('pros/' + uid()).set({ vault: nv }, { merge: true }); S.pro.vault = nv; toast('Nova frase secreta salva.'); }
           else toast('Frase não trocada. Troque em Consultório > Segurança.');
         }
         if (S.pro.slug) { var ps = await fs.doc('profiles/' + S.pro.slug).get(); S.prof = ps.exists ? ps.data() : null; }

@@ -14,12 +14,14 @@ window.APP_NAME = "Meu Consultório";
 /* E-mails (conta Google) da administração: liberam assinaturas em admin.html. Use os mesmos de firestore.rules. */
 window.ADMIN_EMAILS = ["ocasaldascifras@gmail.com", "thalitaaladio.contato@gmail.com"];
 
-/* Assinatura. price = valor mensal; annual = valor do plano anual (0 = não oferecer).
+/* Assinatura. Dois planos: Essencial (sistema) e Premium (sistema + consultoria do consultório).
    pixType: cpf, cnpj, email, telefone ou aleatoria. whatsapp: número que recebe os comprovantes (com DDD). */
 window.BILLING = {
-  price: 150,
-  annual: 0,
   trialDays: 14,
+  plans: {
+    essencial: { name: "Essencial", price: 99, perks: ["Agenda e página de agendamento", "Prontuário cifrado com evolução ditada", "Documentos com timbre", "Financeiro com PIX e recibo"] },
+    premium: { name: "Premium", price: 349, perks: ["Tudo do Essencial", "Relatório financeiro do consultório", "Revisão trimestral de 50 min com a Casal das Cifra$", "Dúvidas financeiras pelo WhatsApp"] }
+  },
   pixType: "email",
   pixKey: "",
   pixName: "O Casal das Cifras",
