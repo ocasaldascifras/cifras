@@ -65,6 +65,10 @@ main{max-width:980px;margin:0 auto;padding:16px 16px 110px;display:grid;gap:16px
   .tabs button[aria-current=page]{border-bottom-color:var(--accent)}
   main{padding-bottom:48px}
 }
+.logo{font-family:var(--f-display);font-weight:700;letter-spacing:-.02em}
+h1.logo{font-size:40px;line-height:1;color:var(--ink)}
+.tagline{font:300 21px/1.35 var(--f-text);color:var(--ink)}
+.pub-foot{max-width:640px;margin:0 auto;padding:0 16px 32px;font-size:13px;color:var(--muted);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .subbar{max-width:980px;margin:12px auto 0;width:calc(100% - 32px);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--amber-soft);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:15px}
 .subbar.bad{background:var(--danger-soft);box-shadow:inset 0 0 0 1px var(--danger-line)}
 .subbar span{flex:1 1 240px}

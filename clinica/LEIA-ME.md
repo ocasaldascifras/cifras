@@ -1,4 +1,6 @@
-# Meu Consultório: plataforma gratuita para consultórios
+# Psifra$
+
+**Seu consultório cifrado. Suas contas em dia.** Um produto da Casal das Cifra$.
 
 Plataforma por assinatura para psicólogas(os) e outros profissionais de saúde que atendem em consultório. Cada profissional cria a própria conta e passa a ter:
 

@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2B2031">
-<title>Agendar sessão</title>
+<title>Agendar sessão · Psifra$</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=Montserrat:wght@400;700&display=swap">
 <link rel="stylesheet" href="style.css">
@@ -27,7 +27,7 @@
     var snap = await fs.doc('profiles/' + slug).get();
     if (!snap.exists) return fail('Não encontramos esta agenda. Confira o link.');
     P = snap.data(); off = P.tz == null ? -180 : P.tz;
-    document.title = 'Agendar com ' + P.name;
+    document.title = 'Agendar com ' + P.name + ' · Psifra$';
     if (P.on === false) return header('<div class="note">A agenda on-line está fechada no momento.' + (P.wa ? ' Fale direto pelo <a href="' + C.waLink(P.wa, 'Olá! Gostaria de agendar uma sessão.') + '" target="_blank" rel="noopener">WhatsApp</a>.' : '') + '</div>');
     var bs = await fs.collection('profiles/' + slug + '/busy').get();
     var busy = bs.docs.map(function (d) { return { t: +d.id, d: d.data().d }; });
@@ -110,4 +110,5 @@
   load().catch(function (e) { console.error(e); fail('Não foi possível carregar a agenda. Verifique sua conexão.'); });
 })();
 </script>
+<footer class="pub-foot"><span class="logo">Psifra$</span> <span>· agenda e prontuário cifrados para consultórios</span></footer>
 </body></html>

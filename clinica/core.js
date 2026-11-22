@@ -7,7 +7,9 @@
   var te = new TextEncoder(), td = new TextDecoder();
   var sub = window.crypto && window.crypto.subtle;
 
-  C.appName = window.APP_NAME || 'Meu Consultório';
+  C.appName = window.APP_NAME || 'Psifra$';
+  C.tagline = window.APP_TAGLINE || 'Seu consultório cifrado. Suas contas em dia.';
+  C.maker = 'da Casal das Cifra$';
   /* Assinatura: valores em firebase-config.js (window.BILLING). */
   C.billing = Object.assign({ trialDays: 14, pixType: 'email', pixKey: '', pixName: '', pixCity: '', whatsapp: '' }, window.BILLING || {});
   C.billing.plans = Object.assign({

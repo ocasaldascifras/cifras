@@ -9,7 +9,8 @@ window.FIREBASE_CONFIG = {
   appId: "COLE_AQUI"
 };
 /* Nome que aparece no topo das páginas. */
-window.APP_NAME = "Meu Consultório";
+window.APP_NAME = "Psifra$";
+window.APP_TAGLINE = "Seu consultório cifrado. Suas contas em dia.";
 
 /* E-mails (conta Google) da administração: liberam assinaturas em admin.html. Use os mesmos de firestore.rules. */
 window.ADMIN_EMAILS = ["ocasaldascifras@gmail.com", "thalitaaladio.contato@gmail.com"];

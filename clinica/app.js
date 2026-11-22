@@ -136,7 +136,8 @@
   }
   function loginScreen() {
     screen('<div class="center"><div class="box">' +
-      '<h1 class="brand">' + h(C.appName) + '</h1>' +
+      '<div><h1 class="brand logo">' + h(C.appName) + '</h1><p class="small muted">' + h(C.maker) + '</p></div>' +
+      '<p class="tagline">' + h(C.tagline) + '</p>' +
       '<p>Agenda, prontuário, documentos e financeiro do seu consultório, com página de agendamento on-line.</p>' +
       '<button class="btn pri" data-a="login">Entrar com Google</button>' +
       '<p class="small">' + C.billing.trialDays + ' dias grátis para testar. Depois, a partir de ' + C.money(C.billing.plans.essencial.price) + ' por mês.</p>' +
