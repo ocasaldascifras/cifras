@@ -23,7 +23,14 @@
     return !!(window.firebase && c.apiKey && String(c.apiKey).indexOf('COLE') < 0);
   };
   C.fs = function () {
-    if (!C._fs) { firebase.initializeApp(window.FIREBASE_CONFIG); C._fs = firebase.firestore(); }
+    if (!C._fs) {
+      firebase.initializeApp(window.FIREBASE_CONFIG);
+      /* App Check (reCAPTCHA v3): barra robôs. Só liga quando a chave do site estiver em firebase-config.js. */
+      if (window.APPCHECK_SITE_KEY && firebase.appCheck) {
+        try { firebase.appCheck().activate(window.APPCHECK_SITE_KEY, true); } catch (e) { console.warn('App Check', e); }
+      }
+      C._fs = firebase.firestore();
+    }
     return C._fs;
   };
 

@@ -35,6 +35,8 @@ Quando passar de umas 30 assinantes, vale automatizar a cobrança (assinatura re
 
 ---
 
+> **Para lançar, sigam o [`LANCAMENTO.md`](LANCAMENTO.md)**: roteiro com tudo o que falta, quem faz e quanto tempo leva.
+
 ## Instalação (cerca de 20 minutos, uma única vez)
 
 Use um **projeto Firebase separado** do Casal das Cifras: são dados de outras pessoas, com regras diferentes.

@@ -8,6 +8,10 @@ window.FIREBASE_CONFIG = {
   messagingSenderId: "COLE_AQUI",
   appId: "COLE_AQUI"
 };
+/* App Check (proteção contra robôs na página de agendamento): cole a "chave do site" do reCAPTCHA v3
+   criada no console do Firebase (Build > App Check). Vazio = desligado. */
+window.APPCHECK_SITE_KEY = "";
+
 /* Nome que aparece no topo das páginas. */
 window.APP_NAME = "Psifra$";
 window.APP_TAGLINE = "Seu consultório cifrado. Suas contas em dia.";
