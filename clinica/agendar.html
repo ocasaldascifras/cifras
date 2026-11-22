@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2F6B5A">
+<title>Agendar sessão</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="pub" id="pub"><p class="muted"><span class="spin"></span> Carregando agenda…</p></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.CC, h = C.h, root = document.getElementById('pub');
+  var slug = (new URLSearchParams(location.search).get('u') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+  var P, fs, slots = [], selDay = null, selT = null, off = -180;
+  function fail(t) { root.innerHTML = '<h1>Agendamento</h1><p>' + h(t) + '</p>'; }
+  if (!C.configured()) return fail('Página em configuração.');
+  if (!slug) return fail('Link incompleto. Peça o link de agendamento ao seu profissional.');
+  fs = C.fs();
+
+  async function load() {
+    var snap = await fs.doc('profiles/' + slug).get();
+    if (!snap.exists) return fail('Não encontramos esta agenda. Confira o link.');
+    P = snap.data(); off = P.tz == null ? -180 : P.tz;
+    document.title = 'Agendar com ' + P.name;
+    if (P.on === false) return header('<div class="note">A agenda on-line está fechada no momento.' + (P.wa ? ' Fale direto pelo <a href="' + C.waLink(P.wa, 'Olá! Gostaria de agendar uma sessão.') + '" target="_blank" rel="noopener">WhatsApp</a>.' : '') + '</div>');
+    var bs = await fs.collection('profiles/' + slug + '/busy').get();
+    var busy = bs.docs.map(function (d) { return { t: +d.id, d: d.data().d }; });
+    slots = C.freeSlots(P, busy, Date.now());
+    var days = []; slots.forEach(function (t) { var d = C.dayStart(t, off); if (days.indexOf(d) < 0) days.push(d); });
+    if (selDay == null || days.indexOf(selDay) < 0) selDay = days[0];
+    if (selT && slots.indexOf(selT) < 0) selT = null;
+    draw(days);
+  }
+  function header(rest) {
+    var mode = { online: 'Atendimento on-line', presencial: 'Atendimento presencial', ambos: 'On-line ou presencial' }[P.mode || 'online'];
+    root.innerHTML = '<header class="stack"><p class="small muted">Agendamento</p><h1>' + h(P.name) + '</h1>' +
+      (P.reg ? '<p class="muted">' + h(P.reg) + '</p>' : '') + (P.bio ? '<p>' + h(P.bio) + '</p>' : '') +
+      '<p class="row small"><span class="chip acc">' + mode + '</span><span class="chip">' + (P.dur || 50) + ' min</span>' + (P.price ? '<span class="chip">' + C.money(P.price) + '</span>' : '') + '</p></header>' + (rest || '');
+  }
+  function draw(days) {
+    if (!slots.length) return header('<div class="note">Nenhum horário livre nos próximos dias.' + (P.wa ? ' Fale pelo <a href="' + C.waLink(P.wa, 'Olá! Gostaria de agendar uma sessão.') + '" target="_blank" rel="noopener">WhatsApp</a>.' : ' Tente novamente mais tarde.') + '</div>');
+    var times = slots.filter(function (t) { return C.dayStart(t, off) === selDay; });
+    header('<section class="stack" aria-label="Escolha o dia"><h2>Escolha o dia</h2><div class="days">' + days.map(function (d) {
+      return '<button type="button" data-day="' + d + '" aria-pressed="' + (d === selDay) + '"><small>' + C.fmt(d, off, { weekday: 'short' }).replace('.', '') + '</small><b>' + C.fmt(d, off, { day: 'numeric' }) + '</b><small>' + C.fmt(d, off, { month: 'short' }).replace('.', '') + '</small></button>';
+    }).join('') + '</div></section>' +
+      '<section class="stack" aria-label="Escolha o horário"><h2>Horário</h2><div class="times">' + times.map(function (t) {
+        return '<button type="button" data-t="' + t + '" aria-pressed="' + (t === selT) + '">' + C.hm(t, off) + '</button>';
+      }).join('') + '</div>' + (off !== -(new Date().getTimezoneOffset()) ? '<p class="small muted">Horários no fuso do consultório.</p>' : '') + '</section>' +
+      (selT ? form() : ''));
+    if (selT) { var f = document.getElementById('fbook'); f.addEventListener('submit', book); f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  function form() {
+    return '<form id="fbook" class="card stack"><h2>Seus dados</h2><p><b>' + C.fmt(selT, off, { weekday: 'long', day: 'numeric', month: 'long' }) + ', ' + C.hm(selT, off) + '</b></p>' +
+      '<label><span>Nome completo</span><input name="name" required autocomplete="name"></label>' +
+      '<label><span>WhatsApp</span><input name="phone" required inputmode="tel" autocomplete="tel" placeholder="(11) 91234-5678"></label>' +
+      '<label><span>E-mail (opcional)</span><input name="email" type="email" autocomplete="email"></label>' +
+      (P.mode === 'ambos' ? '<label><span>Como prefere?</span><select name="mode"><option value="online">On-line (vídeo)</option><option value="presencial">Presencial</option></select></label>' : '') +
+      '<label><span>Quer deixar um recado? (opcional)</span><textarea name="msg" rows="3" style="min-height:80px" maxlength="500"></textarea></label>' +
+      '<label class="check"><input type="checkbox" name="ok" required> <span class="small">Autorizo o uso destes dados para agendamento e contato. Eles seguem criptografados direto para o(a) profissional.</span></label>' +
+      '<button class="btn pri">Pedir agendamento</button><p id="err" class="small err" role="alert"></p></form>';
+  }
+  async function book(e) {
+    e.preventDefault();
+    var f = e.target, btn = f.querySelector('button'), v = {};
+    new FormData(f).forEach(function (x, k) { v[k] = String(x).trim(); });
+    if (C.digits(v.phone).length < 10) { document.getElementById('err').textContent = 'Confira o WhatsApp com DDD.'; return; }
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Enviando';
+    var mode = P.mode === 'ambos' ? v.mode : (P.mode || 'online'), tok = C.token(20);
+    var room = mode === 'presencial' ? '' : (P.roomMode === 'fixo' && P.roomUrl ? P.roomUrl : 'https://meet.jit.si/' + slug + '-' + C.token(12));
+    try {
+      var sealed = await C.sealFor(P.pub, { name: v.name, phone: v.phone, email: v.email || '', mode: mode, msg: v.msg || '', d: P.dur || 50, room: room, tok: tok, t: selT });
+      var b = fs.batch(), base = 'profiles/' + slug;
+      b.set(fs.doc(base + '/busy/' + selT), { by: 'p', d: P.dur || 50, at: Date.now() });
+      b.set(fs.collection(base + '/requests').doc(), { slot: String(selT), wk: sealed.wk, iv: sealed.iv, ct: sealed.ct, at: Date.now() });
+      await b.commit();
+      done(v, mode, room, tok);
+    } catch (x) {
+      console.error(x);
+      document.getElementById('err').textContent = 'Esse horário acabou de ser ocupado ou a agenda mudou. Escolha outro.';
+      btn.disabled = false; btn.textContent = 'Pedir agendamento';
+      selT = null; setTimeout(load, 1200);
+    }
+  }
+  function done(v, mode, room, tok) {
+    var t = selT, end = t + (P.dur || 50) * 60000;
+    var gc = function (x) { return new Date(x).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
+    var cal = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Sessão com ' + P.name) + '&dates=' + gc(t) + '/' + gc(end) +
+      '&details=' + encodeURIComponent(room ? 'Sala de vídeo: ' + room : (P.address || '')) + (room ? '' : '&location=' + encodeURIComponent(P.address || ''));
+    var conf = new URL('confirmar.html', location.href); conf.search = new URLSearchParams({ u: slug, t: tok, d: String(t), r: room }).toString();
+    header('<section class="card stack" role="status"><h2>Pedido enviado ✓</h2>' +
+      '<p><b>' + C.fmt(t, off, { weekday: 'long', day: 'numeric', month: 'long' }) + ', ' + C.hm(t, off) + '</b> · ' + (mode === 'presencial' ? 'presencial' : 'on-line') + '</p>' +
+      '<p>O horário ficou reservado para você. ' + h(P.name.split(' ')[0]) + ' vai confirmar pelo WhatsApp.</p>' +
+      (mode === 'presencial' && P.address ? '<p class="small">Endereço: ' + h(P.address) + '</p>' : '') +
+      (room ? '<p class="small">Sua sala de vídeo (abra no horário da sessão):<br><a href="' + h(room) + '" target="_blank" rel="noopener" class="mono">' + h(room) + '</a></p>' : '') +
+      '<div class="row"><a class="btn" href="' + h(cal) + '" target="_blank" rel="noopener">Salvar na minha agenda</a>' +
+      '<a class="btn" href="' + h(conf.href) + '">Link para confirmar ou desmarcar</a></div>' +
+      '<p class="small muted">Guarde este último link: por ele você confirma presença ou avisa se precisar desmarcar.</p></section>');
+  }
+  root.addEventListener('click', function (e) {
+    var d = e.target.closest('[data-day]'), t = e.target.closest('[data-t]');
+    if (d) { selDay = +d.dataset.day; selT = null; load(); }
+    if (t) { selT = +t.dataset.t; load(); }
+  });
+  load().catch(function (e) { console.error(e); fail('Não foi possível carregar a agenda. Verifique sua conexão.'); });
+})();
+</script>
+</body></html>

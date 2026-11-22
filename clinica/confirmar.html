@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2F6B5A">
+<meta name="robots" content="noindex">
+<title>Confirmar sessão</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="pub" id="pub"><p class="muted"><span class="spin"></span> Carregando…</p></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.CC, h = C.h, root = document.getElementById('pub'), q = new URLSearchParams(location.search);
+  var slug = (q.get('u') || '').replace(/[^a-z0-9-]/g, ''), tok = (q.get('t') || '').replace(/[^a-z0-9]/g, ''), t = +q.get('d'), room = q.get('r') || '';
+  if (!/^https:\/\//.test(room)) room = '';
+  if (!C.configured() || !slug || tok.length !== 20) { root.innerHTML = '<h1>Confirmar sessão</h1><p>Link incompleto. Peça um novo link ao seu profissional.</p>'; return; }
+  var fs = C.fs();
+  fs.doc('profiles/' + slug).get().then(function (s) {
+    var P = s.exists ? s.data() : { name: 'seu profissional' }, off = P.tz == null ? -180 : P.tz;
+    var when = t ? C.fmt(t, off, { weekday: 'long', day: 'numeric', month: 'long' }) + ', às ' + C.hm(t, off) : '';
+    var past = t && t + 3600000 < Date.now();
+    root.innerHTML = '<header class="stack"><p class="small muted">Sua sessão com</p><h1>' + h(P.name) + '</h1>' + (when ? '<p><b>' + h(when) + '</b></p>' : '') + '</header>' +
+      (past ? '<div class="note">Esta sessão já passou.</div>' :
+        '<div class="stack" id="acts"><button class="btn pri" data-s="ok">Confirmo minha presença</button><button class="btn dan" data-s="no">Preciso desmarcar</button></div>' +
+        (room ? '<section class="card stack"><h2>Sala de vídeo</h2><p class="small">Entre alguns minutos antes, em um lugar reservado, com fone de ouvido se possível.</p><a class="btn" href="' + h(room) + '" target="_blank" rel="noopener">Entrar na sala</a></section>' : '') +
+        '<p id="res" role="status"></p>');
+    root.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-s]'); if (!b) return;
+      var s = b.dataset.s;
+      if (s === 'no' && !confirm('Avisar que você precisa desmarcar?')) return;
+      document.querySelectorAll('[data-s]').forEach(function (x) { x.disabled = true; });
+      fs.doc('profiles/' + slug + '/confirms/' + tok).set({ s: s, at: Date.now() }).then(function () {
+        document.getElementById('res').innerHTML = s === 'ok' ? '<b class="okc">Presença confirmada. Até lá!</b>' :
+          '<b>Aviso enviado.</b> ' + (P.wa ? '<a href="' + C.waLink(P.wa, 'Olá! Precisei desmarcar a sessão de ' + when + '. Podemos remarcar?') + '" target="_blank" rel="noopener">Combine um novo horário pelo WhatsApp</a>.' : 'Combine um novo horário com seu profissional.');
+        document.querySelectorAll('[data-s]').forEach(function (x) { x.disabled = false; });
+      }).catch(function () { document.getElementById('res').innerHTML = '<span class="err">Não foi possível registrar. Tente de novo.</span>'; document.querySelectorAll('[data-s]').forEach(function (x) { x.disabled = false; }); });
+    });
+  }).catch(function () { root.innerHTML = '<p class="err">Não foi possível carregar. Verifique sua conexão.</p>'; });
+})();
+</script>
+</body></html>

@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function profile(slug) { return get(/databases/$(database)/documents/profiles/$(slug)).data; }
+    function ownsProfile(slug) { return signedIn() && profile(slug).uid == request.auth.uid; }
+
+    // Página pública de cada profissional: qualquer pessoa lê; só a dona/o dono grava.
+    match /profiles/{slug} {
+      allow read: if true;
+      allow create: if signedIn() && slug.matches('^[a-z0-9-]{3,40}$')
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+
+      // Horários ocupados: só o início e a duração, sem nome de ninguém.
+      match /busy/{t} {
+        allow read: if true;
+        // Paciente só cria (nunca altera ou apaga) um horário futuro, com a página aberta.
+        allow create: if t.matches('^[0-9]{13}$') && (
+          ownsProfile(slug) || (
+            request.resource.data.keys().hasOnly(['by', 'd', 'at'])
+            && request.resource.data.by == 'p'
+            && request.resource.data.d is int && request.resource.data.d == profile(slug).dur
+            && int(t) > request.time.toMillis()
+            && profile(slug).on == true));
+        allow update, delete: if ownsProfile(slug);
+      }
+
+      // Pedido de agendamento: vai cifrado com a chave pública do profissional.
+      match /requests/{id} {
+        allow create: if request.resource.data.keys().hasOnly(['slot', 'wk', 'iv', 'ct', 'at'])
+          && request.resource.data.ct is string && request.resource.data.ct.size() < 20000
+          && request.resource.data.wk is string && request.resource.data.wk.size() < 1000
+          && request.resource.data.slot is string
+          && existsAfter(/databases/$(database)/documents/profiles/$(slug)/busy/$(request.resource.data.slot))
+          && !exists(/databases/$(database)/documents/profiles/$(slug)/busy/$(request.resource.data.slot));
+        allow read, delete: if ownsProfile(slug);
+      }
+
+      // Confirmação do paciente pelo link (token aleatório de 20 caracteres).
+      match /confirms/{token} {
+        allow create, update: if token.matches('^[a-z0-9]{20}$')
+          && request.resource.data.keys().hasOnly(['s', 'at'])
+          && request.resource.data.s in ['ok', 'no'];
+        allow read, delete: if ownsProfile(slug);
+      }
+    }
+
+    // Consultório privado: só a própria conta. O conteúdo já chega cifrado.
+    match /pros/{uid}/{document=**} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+  }
+}
