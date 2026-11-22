@@ -168,56 +168,34 @@ Investir com critério começa por entender o cenário. Estes indicadores se atu
 
 ---
 
-## SEÇÃO 5 · Prova social
+## SEÇÃO 5 · Prova: compromissos verificáveis
 
-🎨 *Fundo creme-escuro. Carrossel de 3 a 6 cartões no desktop (grade 3 colunas), 1 por vez no celular. Cada cartão: foto (ou iniciais), nome + cidade + perfil, frase-título em negrito, depoimento curto e um "antes → depois" comportamental. Se houver vídeo-depoimento, usar 1 em destaque acima dos cartões.*
+🎨 *Fundo cinza-papel. 6 cartões brancos em grade 3×2 (1 coluna no celular), cada um com rótulo em caixa alta, título curto e uma frase.*
 
-### Quem já passou pela jornada conta como foi
+### O que você pode cobrar de nós
+Não pedimos que você confie em promessas. Estes compromissos estão no contrato que você assina.
 
-**Estrutura ideal de cada depoimento (pedir neste formato):**
-1. **Quem é:** `[PREENCHER: nome ou iniciais, idade, cidade, individual ou casal]`
-2. **Como estava antes:** `[PREENCHER: a dor na frase da própria pessoa]`
-3. **O momento da virada:** `[PREENCHER: a sessão ou ferramenta que mudou algo]`
-4. **Como está hoje:** `[PREENCHER: mudança concreta de comportamento ou organização]`
+- **Antes de começar:** primeira sessão em até 7 dias depois do seu sim.
+- **Depois de cada sessão:** resumo por escrito em até 24 horas.
+- **Entre as sessões:** dúvidas no WhatsApp, sem esperar a próxima reunião (dias úteis, resposta em 24 a 48 h úteis).
+- **Na sua agenda:** remarcação sem custo com 24 horas de aviso.
+- **Nos seus dados:** sigilo e LGPD por contrato.
+- **Na nossa independência:** honorário fixo, sem comissão.
 
-**Exemplo de layout (texto fictício só para diagramação — substituir):**
-> **"Pela primeira vez a gente fala de dinheiro sem brigar."**
-> `[PREENCHER: depoimento real, 2 a 4 linhas]`
-> **Antes:** `[...]` → **Depois:** `[...]`
-> — `[Nome], [cidade] · Jornada 01, em casal`
-
-**Números de prova (se puderem ser confirmados):**
-- `[PREENCHER]` clientes atendidos
-- `[PREENCHER]` sessões realizadas
-- `[PREENCHER]` nota média de satisfação
-
-⚠️ **Regras para esta seção:** depoimento só com **autorização por escrito** (LGPD, cláusula 13 de confidencialidade do contrato); priorizar mudança de **comportamento e organização**, nunca rentabilidade ("rendeu X%") — o serviço é educativo e não promete resultado financeiro.
+> **Por que não há depoimentos:** não publicamos depoimento nem número de clientes que não sejam reais e autorizados por escrito (CDC, art. 37; Código do CONAR). Quando houver, há um modelo de cartão comentado no HTML, logo acima desta seção, pronto para receber os depoimentos. Fale de organização e comportamento, nunca de rentabilidade.
 
 ---
 
 ## SEÇÃO 6 · Bônus
 
-🎨 *Cartões com faixa "BÔNUS 1/2/3", valor de referência riscado e selo "Incluso na trilha". Visual de presente, mas sóbrio.*
-
-> ⚠️ **Atenção, Thalita e Bruna:** no material atual **não há bônus definidos**, só itens incluídos. Abaixo estão **sugestões** montadas com ferramentas que vocês já têm prontas. Os valores de referência estão como `[PREENCHER]` porque não foram precificados. A exceção é a sugestão 4, que usa um preço que já existe na tabela.
-
 ### Além das 18 sessões, você também leva:
 
-**Bônus 1 · Guia antigolpe e antivenda**
-Os sinais de alerta para reconhecer promessa irreal, urgência fabricada e oferta empurrada antes de entregar dinheiro ou dados. *Para usar a vida toda, em toda oferta que aparecer.*
-~~Valor de referência: R$ `[PREENCHER]`~~ → **Incluso**
+**Bônus 1 · Guia antigolpe e antivenda** · Incluso, exclusivo para clientes, não vendido separadamente.
+**Bônus 2 · Guia de critérios de escolha** · Incluso, exclusivo para clientes, não vendido separadamente.
+**Bônus 3 · Calendário anual e datas sazonais** · Incluso, exclusivo para clientes, não vendido separadamente.
+**Bônus 4 · 1º mês de Acompanhamento Essencial** · ~~Valor de tabela: R$ 300 (casal R$ 390)~~ → Incluso na Trilha completa.
 
-**Bônus 2 · Guia de critérios de escolha**
-O checklist que você usa **sozinho(a)** para avaliar qualquer produto que lhe oferecerem: liquidez, prazo, custo, tributação e risco. *Você nunca mais depende da opinião de quem vende.*
-~~Valor de referência: R$ `[PREENCHER]`~~ → **Incluso**
-
-**Bônus 3 · Calendário anual e datas sazonais**
-IPVA, IPTU, material escolar, 13º, férias: as despesas que "pegam de surpresa" mapeadas com antecedência. *Janeiro deixa de ser o mês do susto.*
-~~Valor de referência: R$ `[PREENCHER]`~~ → **Incluso**
-
-**Bônus 4 (sugestão a validar) · Primeiro mês de Acompanhamento Essencial**
-Relatório mensal e lembretes depois da trilha, para o método continuar rodando.
-~~Valor de tabela: R$ 300 (casal R$ 390)~~ → **Incluso** `[VALIDAR: decisão comercial nova]`
+> Os guias não ganharam "valor de referência" riscado porque nunca foram vendidos separadamente: preço riscado que nunca foi cobrado é publicidade enganosa. O bônus 4 usa o preço real da tabela.
 
 ---
 
@@ -294,7 +272,7 @@ Depois dos 7 dias, você continua livre: pode encerrar **a qualquer momento**, p
 
 **Thalita Aládio Lopes · Planejamento e gestão financeira · fundadora**
 Une gestão, educação e psicologia para ajudar pessoas e casais a entender a própria relação com o dinheiro e transformá-la em organização e decisão.
-- *Formação:* graduada em Administração · MBA em Gestão, Controladoria e Finanças Corporativas · pós-graduação em Educação Financeira com Neurociência na Docência · Psicologia em curso `[CONFIRMAR se deve aparecer]`
+- *Formação:* graduada em Administração · MBA em Gestão, Controladoria e Finanças Corporativas · pós-graduação em Educação Financeira com Neurociência na Docência · Psicologia (em formação)
 - *Atuação:* professora do curso de Administração no Instituto Luterano de Ensino Superior de Itumbiara (ULBRA) · educação financeira, finanças comportamentais e psicologia do dinheiro · autora do e-book *Dinheiro e Inconsciente* · conduz a jornada 01 e atende a 02
 
 **Bruna Fernandes de Oliveira · Proteção e Legado Financeiro · sócia**
@@ -391,11 +369,8 @@ Thalita Aládio Lopes · CNPJ 65.479.517/0001-50 · Itumbiara/GO
 
 ---
 
-# PENDÊNCIAS: o que preciso de vocês
+# PENDÊNCIAS
 
-1. **Bônus:** vocês querem transformar os guias (antigolpe, critérios, calendário) em bônus? Qual valor de referência para cada um? E o 1º mês de Acompanhamento Essencial como bônus é aprovado?
-2. **Depoimentos:** quais clientes podem dar depoimento por escrito, com autorização? (Os números de prova também: clientes e sessões.)
-3. **Bio das especialistas:** formações, certificações e anos de experiência de Thalita e de Bruna.
-4. **Contatos:** WhatsApp comercial, Instagram e link de agendamento da conversa inicial.
-5. **VSL:** existe vídeo ou foto profissional das duas para a dobra 1?
-6. **Abrangência:** atendem todo o Brasil on-line, ou o foco é Itumbiara/região?
+1. **Depoimentos reais**, com autorização por escrito, quando houver.
+2. **Vídeo de apresentação** ou fotos profissionais das duas para a dobra 1 e para a seção de especialistas.
+3. **Validar os preços** (ainda marcados como sugestão no guia comercial) e o prazo de 120 dias do contrato para a trilha de 12 meses.
