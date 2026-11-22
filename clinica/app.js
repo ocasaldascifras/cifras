@@ -181,6 +181,8 @@
     S.tab = S.tab || 'agenda'; render(); startSync(); if (subActive()) cleanupBusy(); bumpIdle();
     if (!S.pro.terms || S.pro.terms.v !== C.termsVersion) termsSheet();
   }
+  /* Prova do aceite eletrônico (clique): versão, data, conta e navegador. */
+  function termsRecord() { return { v: C.termsVersion, at: Date.now(), email: S.user.email || '', uid: uid(), ua: String(navigator.userAgent || '').slice(0, 200), docs: ['termos', 'privacidade', 'contrato-operador'] }; }
   function termsSheet() {
     openSheet('Documentos atualizados', '<div class="stack"><p>Para continuar usando o ' + h(C.appName) + ', leia e aceite os documentos abaixo.</p>' +
       '<p>' + C.legalLinks + '</p>' +
@@ -827,6 +829,11 @@
       '<div class="grid2"><label><span>Nome do recebedor (como no banco)</span><input name="name" value="' + h(px.name || c.name) + '"></label><label><span>Cidade</span><input name="city" value="' + h(px.city || c.city) + '"></label></div>' +
       '<button class="btn pri">Salvar PIX</button></form>' +
 
+      '<section class="card stack"><h3>Meus documentos</h3>' +
+      (S.pro.terms ? '<p class="small">Você aceitou a versão <b>' + h(S.pro.terms.v) + '</b> em <b>' + dmy(S.pro.terms.at) + ' às ' + hm(S.pro.terms.at) + '</b>' + (S.pro.terms.email ? ', com a conta ' + h(S.pro.terms.email) : '') + '.</p>' : '<p class="small">Aceite ainda não registrado.</p>') +
+      '<p class="small">' + C.legalLinks + '</p>' +
+      '<p class="small muted">Tudo é aceito e guardado on-line. Para baixar uma cópia, abra o documento e use "Compartilhar" ou "Salvar como PDF" do navegador.</p></section>' +
+
       '<section class="card stack"><h3>Segurança e dados</h3>' +
       '<p class="small muted">Prontuários, pacientes, documentos e lançamentos são cifrados no seu aparelho. A administração do sistema só vê texto embaralhado. Se você perder a frase secreta <b>e</b> o código de recuperação, ninguém consegue recuperar os dados.</p>' +
       '<form id="fpass" class="stack"><label><span>Nova frase secreta</span><input type="password" name="p1" minlength="12" autocomplete="new-password" required></label><label><span>Repita</span><input type="password" name="p2" minlength="12" autocomplete="new-password" required></label><button class="btn">Trocar frase secreta</button></form>' +
@@ -907,7 +914,7 @@
     login: function () { var m = $('#msg'); if (m) m.textContent = ''; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function (e) { if (m) m.textContent = e.code === 'auth/unauthorized-domain' ? 'Este endereço não está autorizado no Firebase (passo 6 do LEIA-ME).' : 'Não foi possível entrar. Tente de novo.'; }); },
     logout: function () { lock(true); auth.signOut(); },
     lock: function () { lock(); },
-    'terms-ok': async function () { var t = { v: C.termsVersion, at: Date.now() }; await savePro({ terms: t }); closeSheet(); toast('Aceite registrado.'); },
+    'terms-ok': async function () { var t = termsRecord(); await savePro({ terms: t }); closeSheet(); toast('Aceite registrado.'); },
     sub: function (id) { subSheet(id); }, 'sub-plan': function (id) { subSheet(id); }, report: printReport,
     'unlock-rec': function () { unlockScreen(true); }, 'unlock-pass': function () { unlockScreen(false); },
     tab: function (id) { S.tab = id; if (id !== 'pacientes') S.pid = null; if (id === 'pacientes' && S.tab === id) S.pid = null; render(); scrollTo(0, 0); },
@@ -964,7 +971,7 @@
       try {
         var r = await C.vaultCreate(v.p1);
         var c = { name: S.user.displayName || '', email: S.user.email || '', tz: -180 };
-        var terms = { v: C.termsVersion, at: Date.now() };
+        var terms = termsRecord();
         await fs.doc('pros/' + uid()).set({ vault: r.vault, cfg: c, created: Date.now(), terms: terms }, { merge: true });
         S.pro = Object.assign(S.pro || {}, { vault: r.vault, cfg: c, terms: terms });
         screen('<div class="center"><div class="box"><h1 class="brand">Guarde este código</h1>' +

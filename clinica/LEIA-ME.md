@@ -100,8 +100,8 @@ Pronto. Qualquer profissional entra pelo endereço do painel com a conta Google 
 | Política de Privacidade | `privacidade.html` | Público, link na entrada e na página do paciente |
 | Contrato de Operador | `contrato-operador.html` | Público, aceito na criação da conta |
 | Relatório de Impacto (RIPD) | `legal/RIPD.md` | Interno |
-| Designação do encarregado | `legal/encarregado.md` | Interno, assinar |
-| Plano de resposta a incidente | `legal/plano-incidente.md` | Interno, imprimir |
+| Designação do encarregado | `legal/encarregado.md` | Interno, assinar on-line pelo gov.br |
+| Plano de resposta a incidente | `legal/plano-incidente.md` | Interno, guardar em pasta on-line |
 
 **Antes de publicar,** preencham os trechos entre [colchetes] (razão social, CNPJ, endereço, encarregado, e-mail de privacidade, datas) e passem tudo por uma advogada de proteção de dados. Tirem o aviso "Minuta" do topo das páginas públicas só depois da revisão.
 

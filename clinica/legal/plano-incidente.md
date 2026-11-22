@@ -1,6 +1,6 @@
 # Plano de Resposta a Incidentes de Segurança · Psifra$
 
-> **Minuta para revisão jurídica.** Documento interno. Imprimir e deixar acessível às sócias. Revisar a cada 12 meses ou após qualquer incidente.
+> **Minuta para revisão jurídica.** Documento interno. Manter salvo numa pasta on-line compartilhada entre as sócias (ex.: Google Drive), acessível também pelo celular. Revisar a cada 12 meses ou após qualquer incidente.
 
 ## 1. O que é incidente
 

@@ -71,7 +71,7 @@ Escala: probabilidade e impacto de 1 (baixo) a 3 (alto). Risco = P × I.
 
 Com as medidas adotadas, o principal risco (vazamento do banco) tem impacto residual baixo, porque o conteúdo clínico é ilegível sem a frase de cada profissional. Os riscos residuais médios (R3, R5, R6, R8, R9, R11) têm ações definidas. O tratamento é considerado **adequado para lançamento**, condicionado às ações marcadas "antes do lançamento".
 
-| Aprovação | Nome | Data |
+| Aprovação (assinatura eletrônica via gov.br) | Nome | Data |
 |---|---|---|
 | Encarregado | Thalita Aládio Lopes | [DATA] |
 | Sócia | Thalita Aládio | [DATA] |
