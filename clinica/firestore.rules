@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function profile(slug) { return get(/databases/$(database)/documents/profiles/$(slug)).data; }
+    function ownsProfile(slug) { return signedIn() && profile(slug).uid == request.auth.uid; }
+
+    // Administração (Casal das Cifra$). Troque os e-mails aqui e em firebase-config.js (ADMIN_EMAILS).
+    function isAdmin() {
+      return signedIn() && request.auth.token.email_verified == true
+        && request.auth.token.email in ['ocasaldascifras@gmail.com', 'thalitaaladio.contato@gmail.com'];
+    }
+    // Assinatura em dia: subs/{uid}.until (milissegundos) no futuro.
+    function active(uid) {
+      return exists(/databases/$(database)/documents/subs/$(uid))
+        && get(/databases/$(database)/documents/subs/$(uid)).data.until > request.time.toMillis();
+    }
+
+    // Assinaturas: a pessoa lê a própria e cria só o teste grátis (até 15 dias). Só a administração prorroga.
+    match /subs/{uid} {
+      allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow create: if (signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['until', 'trial', 'email', 'created'])
+          && request.resource.data.trial == true
+          && request.resource.data.until is int
+          && request.resource.data.until <= request.time.toMillis() + 15 * 86400000
+          && request.resource.data.email == request.auth.token.email)
+        || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Página pública de cada profissional: qualquer pessoa lê; só a dona/o dono grava.
+    match /profiles/{slug} {
+      allow read: if true;
+      allow create: if signedIn() && slug.matches('^[a-z0-9-]{3,40}$')
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+
+      // Horários ocupados: só o início e a duração, sem nome de ninguém.
+      match /busy/{t} {
+        allow read: if true;
+        // Paciente só cria (nunca altera ou apaga) um horário futuro, com a página aberta.
+        allow create: if t.matches('^[0-9]{13}$') && (
+          ownsProfile(slug) || (
+            request.resource.data.keys().hasOnly(['by', 'd', 'at'])
+            && request.resource.data.by == 'p'
+            && request.resource.data.d is int && request.resource.data.d == profile(slug).dur
+            && int(t) > request.time.toMillis()
+            && profile(slug).on == true
+            && active(profile(slug).uid)));
+        allow update, delete: if ownsProfile(slug);
+      }
+
+      // Pedido de agendamento: vai cifrado com a chave pública do profissional.
+      match /requests/{id} {
+        allow create: if request.resource.data.keys().hasOnly(['slot', 'wk', 'iv', 'ct', 'at'])
+          && request.resource.data.ct is string && request.resource.data.ct.size() < 20000
+          && request.resource.data.wk is string && request.resource.data.wk.size() < 1000
+          && request.resource.data.slot is string
+          && existsAfter(/databases/$(database)/documents/profiles/$(slug)/busy/$(request.resource.data.slot))
+          && !exists(/databases/$(database)/documents/profiles/$(slug)/busy/$(request.resource.data.slot));
+        allow read, delete: if ownsProfile(slug);
+      }
+
+      // Confirmação do paciente pelo link (token aleatório de 20 caracteres).
+      match /confirms/{token} {
+        allow create, update: if token.matches('^[a-z0-9]{20}$')
+          && request.resource.data.keys().hasOnly(['s', 'at'])
+          && request.resource.data.s in ['ok', 'no'];
+        allow read, delete: if ownsProfile(slug);
+      }
+    }
+
+    // Consultório privado: só a própria conta. O conteúdo já chega cifrado.
+    // Com a assinatura vencida, continua tudo legível (e exportável); só novos registros ficam bloqueados.
+    match /pros/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+    match /pros/{uid}/items/{id} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid && active(uid);
+    }
+  }
+}

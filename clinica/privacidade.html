@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B2031">
+<title>Política de Privacidade · Psifra$</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=Montserrat:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<article class="doc">
+<nav aria-label="Documentos"><a href="termos.html">Termos de Uso</a><a href="privacidade.html">Política de Privacidade</a><a href="contrato-operador.html">Contrato de Operador</a></nav>
+<p class="draft"><b>Minuta.</b> Revisar com advogada antes de publicar. Trechos entre [colchetes] precisam ser preenchidos.</p>
+<h1>Política de Privacidade do Psifra$</h1>
+<p class="meta">Versão 1.0 · vigente a partir de [DATA DE PUBLICAÇÃO]</p>
+
+<h2>1. Resumo em linguagem simples</h2>
+<ul>
+<li><b>Prontuários e dados de pacientes são cifrados no aparelho do profissional.</b> Nós guardamos apenas texto embaralhado e não temos a chave para ler.</li>
+<li>Usamos os dados de cadastro do profissional para prestar o serviço, cobrar e dar suporte. Não vendemos dados e não usamos dados para publicidade.</li>
+<li>Você pode pedir acesso, correção ou exclusão dos seus dados pelo e-mail do encarregado.</li>
+</ul>
+
+<h2>2. Quem é responsável</h2>
+<p>Thalita Aladio Lopes - MEI, CNPJ 65.479.517/0001-50, Rua Marlene Rosa da Silva Ribeiro, 34, Edifício Natália, apto. 201, Itumbiara/GO, CEP 75522-452 ("Casal das Cifra$"). Encarregado pelo tratamento de dados pessoais: <b>Thalita Aládio Lopes</b>, e-mail <b>thalitaaladio.contato@gmail.com</b>.</p>
+<p>Nossa posição muda conforme o tipo de dado:</p>
+<div class="tw"><table>
+<tr><th>Dado</th><th>Quem decide (controlador)</th><th>Nosso papel</th></tr>
+<tr><td>Cadastro, assinatura e uso da conta do profissional</td><td>Casal das Cifra$</td><td>Controladora</td></tr>
+<tr><td>Dados de pacientes (cadastro, agenda, evoluções, documentos, cobranças, pedidos de agendamento)</td><td>O profissional que atende</td><td>Operadora, nos termos do <a href="contrato-operador.html">Contrato de Operador</a></td></tr>
+</table></div>
+<p><b>Pacientes:</b> para exercer seus direitos sobre os dados do seu atendimento, procure diretamente o seu profissional. Nós não conseguimos ler esses dados, mas ajudamos o profissional a atender o seu pedido.</p>
+
+<h2>3. Dados que tratamos como controladora</h2>
+<div class="tw"><table>
+<tr><th>Dado</th><th>Para quê</th><th>Base legal (LGPD)</th></tr>
+<tr><td>Nome, e-mail e identificador da conta Google</td><td>Criar e proteger o acesso</td><td>Execução de contrato (art. 7º, V)</td></tr>
+<tr><td>Nome profissional, registro no conselho, CPF/CNPJ, telefone, endereço, cidade, logotipo e cor do timbre</td><td>Montar sua página, documentos e recibos</td><td>Execução de contrato (art. 7º, V)</td></tr>
+<tr><td>Chave PIX e dados de recebedor</td><td>Gerar cobranças para seus pacientes</td><td>Execução de contrato (art. 7º, V)</td></tr>
+<tr><td>Plano, validade, datas de pagamento e comprovantes enviados por WhatsApp</td><td>Cobrar a assinatura e emitir documento fiscal</td><td>Execução de contrato e obrigação legal (art. 7º, II e V)</td></tr>
+<tr><td>Registros técnicos de acesso (data, hora, endereço IP)</td><td>Segurança, prevenção a fraude e cumprimento do Marco Civil da Internet</td><td>Obrigação legal (art. 7º, II) e legítimo interesse (art. 7º, IX)</td></tr>
+<tr><td>Dados da página pública (nome, registro, apresentação, horários livres)</td><td>Permitir que pacientes agendem</td><td>Execução de contrato (art. 7º, V). Ficam visíveis a qualquer pessoa com o link.</td></tr>
+</table></div>
+<p>Os horários ocupados ficam visíveis na página pública apenas como início e duração, sem nome de ninguém.</p>
+
+<h2>4. Dados que tratamos como operadora</h2>
+<p>Pacientes, sessões, evoluções, documentos, cobranças e pedidos de agendamento são <b>cifrados antes de sair do aparelho</b> (AES-256-GCM, com chave derivada da frase secreta do profissional). O pedido enviado pelo paciente na página de agendamento é cifrado no celular do próprio paciente com a chave pública do profissional. Esses dados são tratados apenas para guardar e transmitir, segundo as instruções do profissional.</p>
+
+<h2>5. Com quem compartilhamos</h2>
+<p>Não vendemos nem alugamos dados. Usamos os seguintes fornecedores (suboperadores):</p>
+<div class="tw"><table>
+<tr><th>Fornecedor</th><th>Serviço</th><th>O que recebe</th></tr>
+<tr><td>Google (Firebase)</td><td>Login e banco de dados, com servidores em São Paulo</td><td>Dados de conta e dados cifrados</td></tr>
+<tr><td>GitHub</td><td>Hospedagem das páginas</td><td>Registros técnicos de acesso (IP)</td></tr>
+<tr><td>Google Fonts</td><td>Fontes das páginas</td><td>Endereço IP de quem abre a página</td></tr>
+<tr><td>Jitsi (8x8), quando usado</td><td>Sala de vídeo das sessões on-line</td><td>Áudio e vídeo da sessão, conforme a política do serviço</td></tr>
+<tr><td>Google ou Apple, quando o ditado é usado</td><td>Reconhecimento de voz do navegador</td><td>Áudio do ditado, processado pelo navegador</td></tr>
+<tr><td>WhatsApp (Meta), quando o profissional escolhe</td><td>Envio de lembretes, cobranças e comprovantes</td><td>A mensagem enviada</td></tr>
+</table></div>
+<p>Também podemos compartilhar dados por ordem judicial ou exigência legal. Nesse caso, os dados de pacientes só poderiam ser entregues cifrados, porque não temos a chave.</p>
+
+<h2>6. Transferência internacional</h2>
+<p>Alguns fornecedores (Google, GitHub, Meta, 8x8) podem processar dados fora do Brasil. Essas transferências seguem o art. 33 da LGPD, com garantias contratuais dos fornecedores. O banco de dados do Psifra$ fica na região de São Paulo.</p>
+
+<h2>7. Por quanto tempo guardamos</h2>
+<ul>
+<li><b>Dados da conta:</b> enquanto a conta existir. Após o pedido de exclusão, apagamos em até [30] dias.</li>
+<li><b>Registros de acesso:</b> 6 meses (art. 15 do Marco Civil da Internet).</li>
+<li><b>Dados de pagamento e fiscais:</b> pelo prazo da legislação tributária, em regra 5 anos.</li>
+<li><b>Dados de pacientes:</b> enquanto o profissional mantiver a conta. Nada é apagado por falta de pagamento. O profissional pode baixar tudo a qualquer momento para cumprir o prazo de guarda do seu conselho.</li>
+</ul>
+
+<h2>8. Segurança</h2>
+<ul>
+<li>Criptografia de ponta a ponta dos dados de pacientes, com chave que não sai do aparelho do profissional;</li>
+<li>Regras de acesso no banco que impedem uma conta de ler outra, testadas automaticamente;</li>
+<li>Trancamento automático por inatividade e frase secreta forte obrigatória;</li>
+<li>Bibliotecas de código hospedadas no próprio site e verificação em duas etapas nas contas da administração.</li>
+</ul>
+<p>Nenhum sistema é imune a falhas. Se houver incidente que possa causar risco ou dano relevante, avisaremos os afetados e a Autoridade Nacional de Proteção de Dados (ANPD), conforme a lei.</p>
+
+<h2>9. Seus direitos</h2>
+<p>Pelo art. 18 da LGPD, você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação de dados desnecessários, portabilidade, informação sobre compartilhamentos e revisão de decisões automatizadas. Escreva para <b>thalitaaladio.contato@gmail.com</b>. Respondemos em até 15 dias. Você também pode reclamar à ANPD (gov.br/anpd).</p>
+
+<h2>10. Cookies e armazenamento no navegador</h2>
+<p>Não usamos cookies de publicidade nem ferramentas de rastreamento. O navegador guarda apenas o necessário para manter você conectado (sessão do login do Google/Firebase).</p>
+
+<h2>11. Crianças e adolescentes</h2>
+<p>A conta é exclusiva para profissionais maiores de 18 anos. Quando o paciente é criança ou adolescente, o profissional, como controlador, deve tratar os dados no melhor interesse do paciente e com a autorização dos responsáveis (art. 14 da LGPD).</p>
+
+<h2>12. Alterações</h2>
+<p>Avisaremos mudanças relevantes na plataforma com antecedência. A data da versão vigente aparece no topo desta página.</p>
+</article>
+</body></html>
