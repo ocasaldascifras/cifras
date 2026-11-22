@@ -1,4 +1,6 @@
-# Página de vendas · O Casal das Cifra$ — Trilha completa
+# Página de vendas · Casal das Cifra$ — Trilha completa
+
+**Visual:** design system *Casal das Cifra$* (artefato salvo): Montserrat Bold nos títulos, Figtree Light no corpo, paleta ameixa-noite, ameixa, cobre, camel e creme, degradê ameixa→cobre só em superfícies, sem verde, vermelho, amarelo ou emoji.
 
 **Versão 1 · 22/11/2026 · rascunho para validação de Thalita e Bruna**
 
@@ -120,7 +122,7 @@ Investir com critério começa por entender o cenário. Estes indicadores se atu
 
 🎨 *Três cartões grandes lado a lado (um por jornada), cada um com número grande (01/02/03), nome, responsável e 6 marcos. Abaixo, grade de 6 ícones com "o que está incluído em todas".*
 
-### Trilha completa O Casal das Cifra$
+### Trilha completa Casal das Cifra$
 **As 3 jornadas, 18 sessões de 50 minutos, 12 meses de acompanhamento.**
 
 #### 01 · Planejamento e gestão financeira · com Thalita
@@ -286,7 +288,7 @@ Depois dos 7 dias, você continua livre: pode encerrar **a qualquer momento**, p
 
 🎨 *Duas colunas com fotos profissionais, nome, frente que lidera e 4 bullets de credencial. Abaixo, faixa "Independência" com 3 ícones.*
 
-### O Casal das Cifra$: duas especialistas, um mesmo cuidado
+### Casal das Cifra$: duas especialistas, um mesmo cuidado
 
 *"Cuidar do que é precioso."*
 
@@ -296,10 +298,10 @@ Une gestão, educação e psicologia para ajudar pessoas e casais a entender a p
 - *Atuação:* professora do curso de Administração no Instituto Luterano de Ensino Superior de Itumbiara (ULBRA) · educação financeira, finanças comportamentais e psicologia do dinheiro · autora do e-book *Dinheiro e Inconsciente* · conduz a jornada 01 e atende a 02
 
 **Bruna Fernandes de Oliveira · Proteção e Legado Financeiro · sócia**
-Ajuda pessoas e famílias a enxergar riscos, planejar a aposentadoria e deixar tudo encontrável e encaminhado.
-- *Formação:* `[PREENCHER: graduação, pós e certificações]`
-- *Atuação:* proteção financeira (riscos, apólices e cobertura) · aposentadoria e legado · conduz a jornada 03 e atende a 02 · `[PREENCHER: anos de experiência]`
-- ⚠️ *Não citar OAB nem "consultoria jurídica": o posicionamento é educação financeira.*
+Une a formação jurídica à visão financeira para ajudar pessoas e famílias a enxergar riscos, planejar a aposentadoria e deixar o patrimônio organizado e encaminhado.
+- *Formação:* graduada em Direito · MBA em Finanças, Banking e Investimentos (em andamento) `[CONFIRMAR o nome exato do curso e a instituição]`
+- *Atuação:* planejamento sucessório e previdenciário · estruturação patrimonial, incluindo holding familiar · proteção financeira (riscos, apólices e cobertura) · conduz a jornada 03 e atende a 02
+- ⚠️ *A formação em Direito entra como credencial. O serviço continua sendo educação financeira: peças jurídicas, holding e testamento são encaminhados a advogado de livre escolha (posicionamento e contrato).*
 
 ### Independência: por que você pode confiar no que dizemos
 - **Honorário fixo.** Não recebemos comissão de banco, corretora, seguradora ou previdência.
@@ -356,7 +358,7 @@ Garantimos método, acompanhamento e entrega de cada sessão. Resultado financei
 
 ## RODAPÉ
 
-O Casal das Cifra$ · Decisões patrimoniais · Cuidar do que é precioso
+Casal das Cifra$ · Decisões patrimoniais · Cuidar do que é precioso
 Thalita Aládio Lopes · CNPJ 65.479.517/0001-50 · Itumbiara/GO
 `[PREENCHER: WhatsApp comercial, Instagram, link de agendamento]`
 
