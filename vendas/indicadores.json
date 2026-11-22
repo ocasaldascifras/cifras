@@ -1,7 +1,8 @@
 {
   "selic": {
     "valor": 13.75,
-    "data": "2026-12-09"
+    "data": "2026-11-22",
+    "desde": "2026-09-17"
   },
   "cdi": {
     "valor": 13.65,
@@ -21,6 +22,6 @@
     "var12m": 7.08,
     "data": "2026-11-19"
   },
-  "atualizadoEm": "2026-11-22T19:54:02.993Z",
+  "atualizadoEm": "2026-11-22T19:55:01.772Z",
   "fontes": "Banco Central do Brasil (SGS 432, 4389, 13522, 433) e B3/Yahoo Finance"
 }
