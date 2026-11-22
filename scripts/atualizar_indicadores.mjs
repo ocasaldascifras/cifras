@@ -21,11 +21,27 @@ async function getJSON(url, tentativas = 3) {
 const num = v => Number(String(v).replace(',', '.'));
 const isoDeBR = d => { const [dd, mm, aa] = d.split('/'); return `${aa}-${mm}-${dd}`; };
 
-async function sgs(codigo) {
-  const dados = await getJSON(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${codigo}/dados/ultimos/1?formato=json`);
-  const u = dados.at(-1);
-  if (!u || !Number.isFinite(num(u.valor))) throw new Error(`Série ${codigo} sem valor`);
-  return { valor: num(u.valor), data: isoDeBR(u.data) };
+const brDe = d => d.toISOString().slice(0, 10).split('-').reverse().join('/');
+
+// Busca a série num intervalo que termina HOJE: algumas séries (ex.: meta Selic, 432)
+// vêm preenchidas com datas futuras, até a próxima reunião do Copom.
+export function ultimoAteHoje(dados, hojeISO) {
+  const validos = dados.filter(u => Number.isFinite(num(u.valor)) && isoDeBR(u.data) <= hojeISO);
+  const u = validos.at(-1);
+  if (!u) throw new Error('série sem valor até hoje');
+  // Desde quando o valor atual vale (útil para a Selic: data em que o Copom a fixou)
+  let desde = isoDeBR(u.data);
+  for (let i = validos.length - 2; i >= 0 && num(validos[i].valor) === num(u.valor); i--) desde = isoDeBR(validos[i].data);
+  return { valor: num(u.valor), data: isoDeBR(u.data), desde };
+}
+
+async function sgs(codigo, dias = 120) {
+  const hoje = new Date(Date.now() - 3 * 3600 * 1000); // horário de Brasília
+  const ini = new Date(hoje.getTime() - dias * 86400000);
+  const dados = await getJSON(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${codigo}/dados?formato=json&dataInicial=${brDe(ini)}&dataFinal=${brDe(hoje)}`);
+  const r = ultimoAteHoje(dados, hoje.toISOString().slice(0, 10));
+  if (codigo !== 432) delete r.desde;
+  return r;
 }
 
 export function ibovDeYahoo(j) {
@@ -72,10 +88,10 @@ async function main() {
   let atual = {};
   try { atual = JSON.parse(await readFile(ARQ, 'utf8')); } catch {}
   const tarefas = {
-    selic: () => sgs(432),      // Meta Selic definida pelo Copom (% a.a.)
-    cdi: () => sgs(4389),       // CDI anualizado base 252 (% a.a.)
-    ipca12m: () => sgs(13522),  // IPCA acumulado em 12 meses (%)
-    ipcaMes: () => sgs(433),    // IPCA do mês (%)
+    selic: () => sgs(432, 400),      // Meta Selic definida pelo Copom (% a.a.)
+    cdi: () => sgs(4389, 15),       // CDI anualizado base 252 (% a.a.)
+    ipca12m: () => sgs(13522, 120),  // IPCA acumulado em 12 meses (%)
+    ipcaMes: () => sgs(433, 120),    // IPCA do mês (%)
     ibovespa,
   };
   const novo = { ...atual };

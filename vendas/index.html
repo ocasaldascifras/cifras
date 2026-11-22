@@ -636,7 +636,7 @@ var CONFIG = {
   var mesBR = function(iso){ var m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']; var p = iso.split('-'); return m[+p[1]-1] + '/' + p[0]; };
   var set = function(k, v, d){ var a = document.querySelector('[data-i="'+k+'"]'); if (a) a.innerHTML = v; var b = document.querySelector('[data-d="'+k+'"]'); if (b && d) b.innerHTML = d; };
   fetch('indicadores.json', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(j){
-    if (j.selic) set('selic', pct(j.selic.valor) + ' <small style="font-size:.45em">a.a.</small>', 'definida em ' + dataBR(j.selic.data));
+    if (j.selic) set('selic', pct(j.selic.valor) + ' <small style="font-size:.45em">a.a.</small>', j.selic.desde ? 'em vigor desde ' + dataBR(j.selic.desde) : 'em ' + dataBR(j.selic.data));
     if (j.cdi) set('cdi', pct(j.cdi.valor) + ' <small style="font-size:.45em">a.a.</small>', 'em ' + dataBR(j.cdi.data));
     if (j.ipca12m) set('ipca12m', pct(j.ipca12m.valor), 'acumulado até ' + mesBR(j.ipca12m.data));
     if (j.ipcaMes) set('ipcaMes', pct(j.ipcaMes.valor), 'referente a ' + mesBR(j.ipcaMes.data));
