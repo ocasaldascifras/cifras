@@ -9,7 +9,7 @@
 |---|---|
 | Agente | Thalita Aladio Lopes - MEI, CNPJ 65.479.517/0001-50 |
 | Papel | Controladora dos dados de profissionais; operadora dos dados de pacientes |
-| Encarregado | [NOME DO ENCARREGADO] · [E-MAIL DO ENCARREGADO] |
+| Encarregado | Thalita Aládio Lopes · [E-MAIL DO ENCARREGADO] |
 | Responsáveis pela elaboração | Thalita Aládio e Bruna Fernandes, sócias |
 | Base normativa | LGPD (Lei nº 13.709/2018), art. 5º, XVII, e art. 38; orientações da ANPD |
 
@@ -73,6 +73,6 @@ Com as medidas adotadas, o principal risco (vazamento do banco) tem impacto resi
 
 | Aprovação | Nome | Data |
 |---|---|---|
-| Encarregado | [NOME] | [DATA] |
+| Encarregado | Thalita Aládio Lopes | [DATA] |
 | Sócia | Thalita Aládio | [DATA] |
 | Sócia | Bruna Fernandes | [DATA] |

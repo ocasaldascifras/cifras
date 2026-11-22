@@ -17,7 +17,7 @@ Qualquer evento, confirmado ou suspeito, que comprometa a confidencialidade, a i
 
 | Papel | Pessoa | Contato |
 |---|---|---|
-| Coordenação (encarregado) | [NOME] | [TELEFONE] · [E-MAIL] |
+| Coordenação (encarregado) | Thalita Aládio Lopes | [TELEFONE] · [E-MAIL] |
 | Técnica | [NOME OU PRESTADOR] | [CONTATO] |
 | Jurídico | [ADVOGADA] | [CONTATO] |
 | Comunicação com clientes | [NOME] | [CONTATO] |

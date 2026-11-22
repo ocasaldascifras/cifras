@@ -4,8 +4,8 @@
 
 Thalita Aladio Lopes - MEI, inscrita no CNPJ sob o nº 65.479.517/0001-50, com sede em Rua Marlene Rosa da Silva Ribeiro, 34, Edifício Natália, apto. 201, Itumbiara/GO, CEP 75522-452, neste ato representada por suas sócias, **designa** como Encarregado(a) pelo Tratamento de Dados Pessoais, nos termos do art. 41 da Lei nº 13.709/2018 e da Resolução CD/ANPD nº 18/2024:
 
-**Nome:** [NOME COMPLETO]
-**CPF:** [CPF]
+**Nome:** Thalita Aládio Lopes
+**CPF:** [CPF: preencher só na via impressa; não publicar no repositório]
 **Canal de contato público:** [E-MAIL DO ENCARREGADO] (recomendado: um endereço exclusivo, como privacidade@[domínio])
 
 ## Atribuições
@@ -29,4 +29,4 @@ ______________________________
 Thalita Aladio Lopes - MEI (representante legal)
 
 ______________________________
-[NOME DO ENCARREGADO] (ciente e de acordo)
+Thalita Aládio Lopes (ciente e de acordo)
