@@ -63,6 +63,6 @@ Pronto. Qualquer profissional entra pelo endereço do painel com a conta Google 
 | `agendar.html` | Página pública de agendamento |
 | `confirmar.html` | Link que o paciente recebe para confirmar ou desmarcar |
 | `core.js` | Criptografia, PIX, horários (compartilhado) |
-| `style.css` | Visual (claro e escuro, celular e computador) |
+| `style.css` | Visual no design system Casal das Cifra$ (ameixa, cobre, camel, creme; Montserrat e Figtree), claro e escuro |
 | `firestore.rules` | Regras de segurança do banco |
 | `firebase-config.js` | Configuração do seu projeto Firebase |

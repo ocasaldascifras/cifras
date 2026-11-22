@@ -577,7 +577,7 @@
   function signature() { var c = cfg(); return '<div class="sig">' + h(c.name || '') + '<br>' + h(c.reg || '') + '</div>'; }
   function placeDate(t) { return '<p class="place">' + h(cfg().city || '') + (cfg().city ? ', ' : '') + C.fmt(t || Date.now(), tz(), { day: 'numeric', month: 'long', year: 'numeric' }) + '.</p>'; }
   function doPrint(inner, title) {
-    var el = $('#print'); el.style.setProperty('--pc', cfg().color || '#2F6B5A');
+    var el = $('#print'); el.style.setProperty('--pc', cfg().color || '#4E3658');
     el.innerHTML = letterhead() + inner + footer();
     var old = document.title; document.title = title || old;
     setTimeout(function () { window.print(); document.title = old; }, 60);
@@ -693,7 +693,7 @@
       '<div class="grid2"><label><span>CPF ou CNPJ (sai no recibo)</span><input name="doc" value="' + h(c.doc) + '"></label><label><span>Telefone</span><input name="phone" inputmode="tel" value="' + h(c.phone) + '"></label></div>' +
       '<div class="grid2"><label><span>E-mail de contato</span><input name="email" type="email" value="' + h(c.email || S.user.email) + '"></label><label><span>Cidade</span><input name="city" value="' + h(c.city) + '"></label></div>' +
       '<label><span>Endereço do consultório (se atende presencial)</span><input name="address" value="' + h(c.address) + '"></label>' +
-      '<div class="grid2"><label><span>Logotipo (opcional)</span><input type="file" name="logo" accept="image/*"></label><label><span>Cor do timbre</span><input type="color" name="color" value="' + h(c.color || '#2F6B5A') + '" style="padding:4px"></label></div>' +
+      '<div class="grid2"><label><span>Logotipo (opcional)</span><input type="file" name="logo" accept="image/*"></label><label><span>Cor do timbre</span><input type="color" name="color" value="' + h(c.color || '#4E3658') + '" style="padding:4px"></label></div>' +
       (c.logo ? '<div class="row"><img src="' + h(c.logo) + '" alt="Logotipo atual" style="max-height:48px"><button type="button" class="btn sm" data-a="logo-del">Remover logotipo</button></div>' : '') +
       '<div class="grid2"><label><span>Valor padrão da sessão (R$)</span><input name="price" inputmode="decimal" value="' + (c.price ? String(c.price).replace('.', ',') : '') + '"></label>' +
       '<label><span>Fuso horário</span><select name="tz">' + [[-120, 'Fernando de Noronha'], [-180, 'Brasília'], [-240, 'Manaus / Cuiabá'], [-300, 'Rio Branco']].map(function (z) { return '<option value="' + z[0] + '"' + (tz() === z[0] ? ' selected' : '') + '>' + z[1] + '</option>'; }).join('') + '</select></label></div>' +
