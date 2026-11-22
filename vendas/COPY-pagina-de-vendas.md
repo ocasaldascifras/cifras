@@ -294,12 +294,12 @@ Depois dos 7 dias, você continua livre: pode encerrar **a qualquer momento**, p
 
 **Thalita Aládio Lopes · Planejamento e gestão financeira · fundadora**
 Une gestão, educação e psicologia para ajudar pessoas e casais a entender a própria relação com o dinheiro e transformá-la em organização e decisão.
-- *Formação:* Administração `[CONFIRMAR: graduação, pós e instituições]` · Psicologia em curso, com estudos em psicanálise `[CONFIRMAR se deve aparecer]`
+- *Formação:* graduada em Administração · MBA em Gestão, Controladoria e Finanças Corporativas · pós-graduação em Educação Financeira com Neurociência na Docência · Psicologia em curso `[CONFIRMAR se deve aparecer]`
 - *Atuação:* professora do curso de Administração no Instituto Luterano de Ensino Superior de Itumbiara (ULBRA) · educação financeira, finanças comportamentais e psicologia do dinheiro · autora do e-book *Dinheiro e Inconsciente* · conduz a jornada 01 e atende a 02
 
 **Bruna Fernandes de Oliveira · Proteção e Legado Financeiro · sócia**
 Une a formação jurídica à visão financeira para ajudar pessoas e famílias a enxergar riscos, planejar a aposentadoria e deixar o patrimônio organizado e encaminhado.
-- *Formação:* graduada em Direito · MBA em Finanças, Banking e Investimentos (em andamento) `[CONFIRMAR o nome exato do curso e a instituição]`
+- *Formação:* graduada em Direito · MBA em Finanças, Investimentos e Banking pela PUCRS (em andamento)
 - *Atuação:* planejamento sucessório e previdenciário · estruturação patrimonial, incluindo holding familiar · proteção financeira (riscos, apólices e cobertura) · conduz a jornada 03 e atende a 02
 - ⚠️ *A formação em Direito entra como credencial. O serviço continua sendo educação financeira: peças jurídicas, holding e testamento são encaminhados a advogado de livre escolha (posicionamento e contrato).*
 

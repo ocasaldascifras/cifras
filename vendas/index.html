@@ -506,11 +506,13 @@ footer b{color:var(--creme-claro);font-family:var(--font-display)}
       <div class="ex">
         <div class="ph">T</div><!-- trocar pela foto: <img class="ph" src="thalita.webp" alt="Thalita Aládio"> -->
         <h3>Thalita Aládio Lopes</h3><div class="role">Planejamento e gestão financeira · fundadora</div>
-        <div class="pills"><span>Administração</span><span>Docência</span><span>Psicologia do dinheiro</span></div>
+        <div class="pills"><span>Administração</span><span>Controladoria e finanças</span><span>Educação financeira</span></div>
         <p class="bio">Une gestão, educação e psicologia para ajudar pessoas e casais a entender a própria relação com o dinheiro e transformá-la em organização e decisão. Para ela, ninguém muda o que faz com o dinheiro sem entender por que faz.</p>
         <h4>Formação</h4>
         <ul>
-          <li>Administração <span class="pend">[CONFIRMAR: graduação, pós-graduação e instituições]</span></li>
+          <li>Graduada em Administração</li>
+          <li>MBA em Gestão, Controladoria e Finanças Corporativas</li>
+          <li>Pós-graduação em Educação Financeira com Neurociência na Docência</li>
           <li>Psicologia em curso, com estudos em psicanálise e na relação entre dinheiro e inconsciente <span class="pend">[CONFIRMAR se deve aparecer]</span></li>
         </ul>
         <h4>Atuação</h4>
@@ -529,7 +531,7 @@ footer b{color:var(--creme-claro);font-family:var(--font-display)}
         <h4>Formação</h4>
         <ul>
           <li>Graduada em Direito</li>
-          <li>MBA em Finanças, Banking e Investimentos (em andamento)</li>
+          <li>MBA em Finanças, Investimentos e Banking pela PUCRS (em andamento)</li>
         </ul>
         <h4>Atuação</h4>
         <ul>
@@ -597,8 +599,8 @@ footer b{color:var(--creme-claro);font-family:var(--font-display)}
    instagram: usuário sem @. */
 var CONFIG = {
   agendaUrl: 'https://calendar.app.google/T3UAaGMuarR9MnKC7',
-  whatsapp: '',
-  instagram: ''
+  whatsapp: '5564999637532',
+  instagram: 'casaldascifras'
 };
 
 (function(){
@@ -622,7 +624,7 @@ var CONFIG = {
     wa.target = '_blank'; wa.rel = 'noopener';
   }
   var c = [];
-  if (CONFIG.whatsapp) c.push('WhatsApp: <a style="color:inherit" href="https://wa.me/' + CONFIG.whatsapp + '">+' + CONFIG.whatsapp + '</a>');
+  if (CONFIG.whatsapp) c.push('WhatsApp: <a style="color:inherit" href="https://wa.me/' + CONFIG.whatsapp + '">(' + CONFIG.whatsapp.slice(2,4) + ') ' + CONFIG.whatsapp.slice(4,9) + '-' + CONFIG.whatsapp.slice(9) + '</a>');
   if (CONFIG.instagram) c.push('Instagram: <a style="color:inherit" href="https://instagram.com/' + CONFIG.instagram + '">@' + CONFIG.instagram + '</a>');
   if (c.length) document.getElementById('contatos').innerHTML = c.join(' · ');
 })();
