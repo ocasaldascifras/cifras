@@ -17,7 +17,7 @@ Qualquer evento, confirmado ou suspeito, que comprometa a confidencialidade, a i
 
 | Papel | Pessoa | Contato |
 |---|---|---|
-| Coordenação (encarregado) | Thalita Aládio Lopes | [TELEFONE] · [E-MAIL] |
+| Coordenação (encarregado) | Thalita Aládio Lopes | (64) 99963-7532 · thalitaaladio.contato@gmail.com |
 | Técnica | [NOME OU PRESTADOR] | [CONTATO] |
 | Jurídico | [ADVOGADA] | [CONTATO] |
 | Comunicação com clientes | [NOME] | [CONTATO] |
@@ -66,7 +66,7 @@ Qualquer evento, confirmado ou suspeito, que comprometa a confidencialidade, a i
 
 > Assunto: Aviso de incidente de segurança no Psifra$
 >
-> Olá, [NOME]. Em [DATA] identificamos [DESCRIÇÃO SIMPLES]. Os dados envolvidos foram [DADOS]. Os prontuários e dados de pacientes ficam cifrados com a sua frase secreta, e [ELES FORAM / NÃO FORAM] afetados. Já fizemos [MEDIDAS]. Recomendamos que você [AÇÃO: trocar a frase secreta em Consultório > Segurança / trocar a senha do Google]. Estamos à disposição em [E-MAIL DO ENCARREGADO]. [NOME], encarregado(a) pela proteção de dados, Casal das Cifra$.
+> Olá, [NOME]. Em [DATA] identificamos [DESCRIÇÃO SIMPLES]. Os dados envolvidos foram [DADOS]. Os prontuários e dados de pacientes ficam cifrados com a sua frase secreta, e [ELES FORAM / NÃO FORAM] afetados. Já fizemos [MEDIDAS]. Recomendamos que você [AÇÃO: trocar a frase secreta em Consultório > Segurança / trocar a senha do Google]. Estamos à disposição em thalitaaladio.contato@gmail.com. [NOME], encarregado(a) pela proteção de dados, Casal das Cifra$.
 
 ## 5. Contatos externos
 

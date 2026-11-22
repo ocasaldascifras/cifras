@@ -27,5 +27,5 @@ window.BILLING = {
   pixKey: "65479517000150",
   pixName: "Thalita Aladio Lopes",
   pixCity: "Itumbiara",
-  whatsapp: ""
+  whatsapp: "64999637532"
 };

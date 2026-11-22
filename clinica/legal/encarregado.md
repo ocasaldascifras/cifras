@@ -6,7 +6,7 @@ Thalita Aladio Lopes - MEI, inscrita no CNPJ sob o nº 65.479.517/0001-50, com s
 
 **Nome:** Thalita Aládio Lopes
 **CPF:** [CPF: preencher só na via impressa; não publicar no repositório]
-**Canal de contato público:** [E-MAIL DO ENCARREGADO] (recomendado: um endereço exclusivo, como privacidade@[domínio])
+**Canal de contato público:** thalitaaladio.contato@gmail.com (recomendado: um endereço exclusivo, como privacidade@[domínio])
 
 ## Atribuições
 
