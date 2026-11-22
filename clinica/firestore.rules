@@ -6,6 +6,30 @@ service cloud.firestore {
     function profile(slug) { return get(/databases/$(database)/documents/profiles/$(slug)).data; }
     function ownsProfile(slug) { return signedIn() && profile(slug).uid == request.auth.uid; }
 
+    // Administração (Casal das Cifra$). Troque os e-mails aqui e em firebase-config.js (ADMIN_EMAILS).
+    function isAdmin() {
+      return signedIn() && request.auth.token.email_verified == true
+        && request.auth.token.email in ['ocasaldascifras@gmail.com', 'thalitaaladio.contato@gmail.com'];
+    }
+    // Assinatura em dia: subs/{uid}.until (milissegundos) no futuro.
+    function active(uid) {
+      return exists(/databases/$(database)/documents/subs/$(uid))
+        && get(/databases/$(database)/documents/subs/$(uid)).data.until > request.time.toMillis();
+    }
+
+    // Assinaturas: a pessoa lê a própria e cria só o teste grátis (até 15 dias). Só a administração prorroga.
+    match /subs/{uid} {
+      allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow create: if (signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['until', 'trial', 'email', 'created'])
+          && request.resource.data.trial == true
+          && request.resource.data.until is int
+          && request.resource.data.until <= request.time.toMillis() + 15 * 86400000
+          && request.resource.data.email == request.auth.token.email)
+        || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
     // Página pública de cada profissional: qualquer pessoa lê; só a dona/o dono grava.
     match /profiles/{slug} {
       allow read: if true;
@@ -25,7 +49,8 @@ service cloud.firestore {
             && request.resource.data.by == 'p'
             && request.resource.data.d is int && request.resource.data.d == profile(slug).dur
             && int(t) > request.time.toMillis()
-            && profile(slug).on == true));
+            && profile(slug).on == true
+            && active(profile(slug).uid)));
         allow update, delete: if ownsProfile(slug);
       }
 
@@ -50,8 +75,13 @@ service cloud.firestore {
     }
 
     // Consultório privado: só a própria conta. O conteúdo já chega cifrado.
-    match /pros/{uid}/{document=**} {
+    // Com a assinatura vencida, continua tudo legível (e exportável); só novos registros ficam bloqueados.
+    match /pros/{uid} {
       allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+    match /pros/{uid}/items/{id} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid && active(uid);
     }
   }
 }

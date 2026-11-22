@@ -1,6 +1,6 @@
 # Meu Consultório: plataforma gratuita para consultórios
 
-Plataforma para psicólogas(os) e outros profissionais de saúde que atendem em consultório. Cada profissional cria a própria conta e passa a ter:
+Plataforma por assinatura para psicólogas(os) e outros profissionais de saúde que atendem em consultório. Cada profissional cria a própria conta e passa a ter:
 
 | O que | Como funciona |
 |---|---|
@@ -11,7 +11,18 @@ Plataforma para psicólogas(os) e outros profissionais de saúde que atendem em 
 | **Financeiro** | Ao marcar a sessão como realizada, a cobrança entra sozinha. PIX com QR Code e "copia e cola" (o dinheiro cai direto na conta do profissional), recibo em PDF com valor por extenso, planilha mensal para o contador. |
 | **Sigilo** | Cada conta só enxerga os próprios pacientes. Além disso, **tudo de paciente é cifrado no aparelho** com uma frase secreta que só o profissional sabe. Nem a administração do sistema consegue ler prontuário. |
 
-**Custo: R$ 0.** GitHub Pages + Firebase no plano gratuito. Sem mensalidade e sem comissão.
+**Assinatura: R$ 150 por mês por profissional, com 14 dias grátis.** Sem comissão sobre as sessões. A infraestrutura (GitHub Pages + Firebase) começa no plano gratuito.
+
+### Como a cobrança funciona
+1. A profissional cria a conta e ganha 14 dias de teste automaticamente.
+2. Na tela "Assinar" ela vê o QR Code PIX de R$ 150 (para a conta de vocês) e envia o comprovante pelo WhatsApp de vocês.
+3. Vocês abrem `admin.html`, entram com a conta Google da administração e tocam em **+1 mês** (ou **+1 ano**).
+4. Assinatura vencida: **nada é apagado**. Ela continua lendo, imprimindo e baixando tudo; só ficam bloqueados novos registros e novos agendamentos pela página. Isso protege vocês diante do CFP e da LGPD (prontuário é dela, e o acesso não pode ser sequestrado por cobrança).
+5. O painel da administração mostra só e-mail e validade. Prontuários continuam ilegíveis para vocês.
+
+Configure em `firebase-config.js` (bloco `BILLING`): valor, plano anual opcional, dias de teste, chave PIX, nome e cidade do recebedor (como no banco) e o WhatsApp que recebe comprovantes. Os e-mails da administração ficam em `ADMIN_EMAILS` e em `firestore.rules` (função `isAdmin`): os dois precisam ser iguais.
+
+Quando passar de umas 30 assinantes, vale automatizar a cobrança (assinatura recorrente no cartão/PIX automático por um intermediador como Asaas, Mercado Pago ou Stripe). Isso exige um servidor (Cloud Functions, plano Blaze do Firebase) e tem taxa por transação.
 
 ---
 
@@ -62,6 +73,7 @@ Pronto. Qualquer profissional entra pelo endereço do painel com a conta Google 
 | `index.html` + `app.js` | Painel do profissional |
 | `agendar.html` | Página pública de agendamento |
 | `confirmar.html` | Link que o paciente recebe para confirmar ou desmarcar |
+| `admin.html` | Painel da administração: liberar e encerrar assinaturas |
 | `core.js` | Criptografia, PIX, horários (compartilhado) |
 | `style.css` | Visual no design system Casal das Cifra$ (ameixa, cobre, camel, creme; Montserrat e Figtree), claro e escuro |
 | `firestore.rules` | Regras de segurança do banco |

@@ -8,6 +8,8 @@
   var sub = window.crypto && window.crypto.subtle;
 
   C.appName = window.APP_NAME || 'Meu Consultório';
+  /* Assinatura: valores em firebase-config.js (window.BILLING). */
+  C.billing = Object.assign({ price: 150, annual: 0, trialDays: 14, pixType: 'email', pixKey: '', pixName: '', pixCity: '', whatsapp: '' }, window.BILLING || {});
   C.configured = function () {
     var c = window.FIREBASE_CONFIG || {};
     return !!(window.firebase && c.apiKey && String(c.apiKey).indexOf('COLE') < 0);

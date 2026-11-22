@@ -10,3 +10,19 @@ window.FIREBASE_CONFIG = {
 };
 /* Nome que aparece no topo das páginas. */
 window.APP_NAME = "Meu Consultório";
+
+/* E-mails (conta Google) da administração: liberam assinaturas em admin.html. Use os mesmos de firestore.rules. */
+window.ADMIN_EMAILS = ["ocasaldascifras@gmail.com", "thalitaaladio.contato@gmail.com"];
+
+/* Assinatura. price = valor mensal; annual = valor do plano anual (0 = não oferecer).
+   pixType: cpf, cnpj, email, telefone ou aleatoria. whatsapp: número que recebe os comprovantes (com DDD). */
+window.BILLING = {
+  price: 150,
+  annual: 0,
+  trialDays: 14,
+  pixType: "email",
+  pixKey: "",
+  pixName: "O Casal das Cifras",
+  pixCity: "",
+  whatsapp: ""
+};

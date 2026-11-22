@@ -56,6 +56,7 @@
 
   /* ---------------- dados cifrados ---------------- */
   async function put(o) {
+    if (!subActive()) { subSheet(); var e = new Error('Assinatura vencida.'); e.sub = true; throw e; }
     var id = o.id || C.token(20), data = Object.assign({}, o); delete data.id;
     data.u = Date.now();
     var e = await C.enc(S.key, data);
@@ -63,7 +64,7 @@
     await fs.doc('pros/' + uid() + '/items/' + id).set({ iv: e.iv, ct: e.ct, u: data.u });
     return id;
   }
-  async function del(id) { S.items.delete(id); await fs.doc('pros/' + uid() + '/items/' + id).delete(); }
+  async function del(id) { if (!subActive()) { subSheet(); var e = new Error('Assinatura vencida.'); e.sub = true; throw e; } S.items.delete(id); await fs.doc('pros/' + uid() + '/items/' + id).delete(); }
   function busyRef(t) { return fs.doc('profiles/' + S.pro.slug + '/busy/' + String(t)); }
   async function setBusy(t, d, by) { if (S.pro.slug) await busyRef(t).set({ by: by || 'x', d: d, at: Date.now() }); }
   async function freeBusy(t) {
@@ -138,6 +139,7 @@
       '<h1 class="brand">' + h(C.appName) + '</h1>' +
       '<p>Agenda, prontuário, documentos e financeiro do seu consultório, com página de agendamento on-line.</p>' +
       '<button class="btn pri" data-a="login">Entrar com Google</button>' +
+      '<p class="small">' + C.billing.trialDays + ' dias grátis para testar. Depois, ' + C.money(C.billing.price) + ' por mês.</p>' +
       '<p class="small muted">Os prontuários são cifrados no seu aparelho com uma frase secreta que só você sabe. Nem a administração do sistema consegue ler.</p>' +
       '<p id="msg" class="small err" role="alert"></p></div></div>');
   }
@@ -170,9 +172,49 @@
     S.key = S.priv = S.dek = null; S.items = new Map(); S.requests = new Map(); S.confirms = new Map(); S.loaded = false;
     if (!silent && S.user && S.pro && S.pro.vault) unlockScreen();
   }
-  function opened(v) {
+  async function opened(v) {
     S.key = v.key; S.priv = v.priv; S.dek = v.dek;
-    S.tab = S.tab || 'agenda'; render(); startSync(); cleanupBusy(); bumpIdle();
+    await loadSub();
+    S.tab = S.tab || 'agenda'; render(); startSync(); if (subActive()) cleanupBusy(); bumpIdle();
+  }
+
+  /* ---------------- assinatura ----------------
+     subs/{uid} = { until (ms), trial, email }. Só a administração prorroga (regras do banco).
+     Vencida: tudo continua legível e exportável; novos registros e agendamentos pela página ficam bloqueados. */
+  async function loadSub() {
+    try {
+      var ref = fs.doc('subs/' + uid()), snap = await ref.get();
+      if (snap.exists) S.sub = snap.data();
+      else {
+        S.sub = { until: Date.now() + C.billing.trialDays * DAY, trial: true, email: S.user.email || '', created: Date.now() };
+        await ref.set(S.sub);
+      }
+    } catch (e) { console.warn('assinatura', e); S.sub = S.sub || { until: 0 }; }
+  }
+  function subActive() { return !!(S.sub && S.sub.until > Date.now()); }
+  function subDays() { return S.sub ? Math.ceil((S.sub.until - Date.now()) / DAY) : 0; }
+  function subBar() {
+    if (!S.sub) return '';
+    var d = subDays(), until = dmy(S.sub.until);
+    if (!subActive()) return '<div class="subbar bad" role="status"><span><b>Assinatura vencida em ' + until + '.</b> Seus dados continuam disponíveis para ler, imprimir e baixar. Para voltar a registrar e receber agendamentos, assine.</span><button class="btn sm pri" data-a="sub">Assinar</button></div>';
+    if (S.sub.trial) return '<div class="subbar" role="status"><span>Teste grátis: ' + (d <= 1 ? 'termina hoje' : 'faltam ' + d + ' dias') + '.</span><button class="btn sm" data-a="sub">Assinar por ' + C.money(C.billing.price) + '/mês</button></div>';
+    if (d <= 5) return '<div class="subbar" role="status"><span>Sua assinatura vence em ' + until + '.</span><button class="btn sm" data-a="sub">Renovar</button></div>';
+    return '';
+  }
+  function subSheet() {
+    var b = C.billing, svg = '', code = '';
+    if (b.pixKey) {
+      code = C.pix({ key: C.pixKey(b.pixType, b.pixKey), name: b.pixName, city: b.pixCity, amount: b.price, txid: 'A' + uid().slice(0, 20) });
+      try { var q = qrcode(0, 'M'); q.addData(code); q.make(); svg = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { }
+    }
+    var msg = 'Olá! Fiz o PIX de ' + C.money(b.price) + ' da assinatura do ' + C.appName + '. Minha conta: ' + (S.user.email || '') + '. Segue o comprovante.';
+    openSheet('Assinatura · ' + C.money(b.price) + '/mês', '<div class="stack">' +
+      '<p>' + (subActive() ? (S.sub.trial ? 'Seu teste grátis vai até <b>' + dmy(S.sub.until) + '</b>.' : 'Sua assinatura vale até <b>' + dmy(S.sub.until) + '</b>.') : 'Sua assinatura venceu em <b>' + dmy(S.sub.until) + '</b>.') + '</p>' +
+      '<p class="small muted">Inclui agenda e página de agendamento, prontuário cifrado com evolução ditada, documentos com timbre, financeiro com PIX e recibo.' + (b.annual ? ' Plano anual: ' + C.money(b.annual) + '.' : '') + '</p>' +
+      (code ? '<div class="qr">' + svg + '</div><label><span>PIX copia e cola</span><textarea readonly class="mono" rows="4" style="min-height:90px">' + h(code) + '</textarea></label>' +
+        '<button class="btn" data-a="copy" data-id="' + h(code) + '">Copiar código PIX</button>' : '<p class="note">Fale com a administração para receber os dados de pagamento.</p>') +
+      (b.whatsapp ? '<a class="btn pri" target="_blank" rel="noopener" href="' + C.waLink(b.whatsapp, msg) + '">Enviar comprovante pelo WhatsApp</a>' : '') +
+      '<p class="small muted">A liberação é feita em até 1 dia útil depois do comprovante. Seus dados nunca são apagados por falta de pagamento: você sempre pode ler e baixar tudo.</p></div>');
   }
   function bumpIdle() {
     clearTimeout(idleTimer);
@@ -188,7 +230,7 @@
       '<button class="btn sm" data-a="lock" title="Trancar os prontuários">🔒 Trancar</button></div></header>' +
       '<nav class="tabs" aria-label="Seções">' + tabs.map(function (t) {
         return '<button data-a="tab" data-id="' + t[0] + '"' + (S.tab === t[0] ? ' aria-current="page"' : '') + '>' + ICON[t[0]] + '<span>' + t[1] + '</span></button>';
-      }).join('') + '</nav><main id="main"></main>';
+      }).join('') + '</nav><div id="subwrap">' + subBar() + '</div><main id="main"></main>';
     renderMain();
   }
   function renderMain() {
@@ -803,6 +845,7 @@
     login: function () { var m = $('#msg'); if (m) m.textContent = ''; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function (e) { if (m) m.textContent = e.code === 'auth/unauthorized-domain' ? 'Este endereço não está autorizado no Firebase (passo 6 do LEIA-ME).' : 'Não foi possível entrar. Tente de novo.'; }); },
     logout: function () { lock(true); auth.signOut(); },
     lock: function () { lock(); },
+    sub: subSheet,
     'unlock-rec': function () { unlockScreen(true); }, 'unlock-pass': function () { unlockScreen(false); },
     tab: function (id) { S.tab = id; if (id !== 'pacientes') S.pid = null; if (id === 'pacientes' && S.tab === id) S.pid = null; render(); scrollTo(0, 0); },
     wk: function (id) { S.week = id === '0' ? null : (S.week || weekStart(Date.now())) + (+id) * WEEK; renderMain(); },
@@ -897,7 +940,7 @@
     if (f.id === 'fsetup' || f.id === 'funlock') return fn(f, btn);
     var val = btn && btn.value;
     busyBtn(btn, true, 'Salvando');
-    try { await fn(f, { value: val }); } catch (err) { console.error(err); toast('Não foi possível salvar: ' + (err.code || err.message)); }
+    try { await fn(f, { value: val }); } catch (err) { if (err && err.sub) return; console.error(err); toast('Não foi possível salvar: ' + (err.code || err.message)); }
     finally { if (document.body.contains(btn)) busyBtn(btn, false); }
   });
   window.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('#sheet')) closeSheet(); });

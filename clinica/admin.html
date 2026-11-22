@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B2031">
+<meta name="robots" content="noindex">
+<title>Assinaturas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=Montserrat:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="pub" id="root" style="max-width:860px"><p class="muted"><span class="spin"></span> Carregando…</p></div>
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="core.js"></script>
+<script>
+/* Painel da administração: só assinaturas (e-mail e validade). Prontuários não aparecem aqui nem podem ser lidos. */
+(function () {
+  'use strict';
+  var C = window.CC, h = C.h, root = document.getElementById('root'), DAY = 864e5, subs = [], q = '';
+  var ADM = (window.ADMIN_EMAILS || []).map(function (s) { return String(s).toLowerCase(); });
+  if (!C.configured()) { root.innerHTML = '<p class="err">Falta configurar firebase-config.js.</p>'; return; }
+  var fs = C.fs(), auth = firebase.auth();
+  var dmy = function (t) { return t ? new Date(t).toLocaleDateString('pt-BR') : '—'; };
+  function login(msg) {
+    root.innerHTML = '<h1>Assinaturas</h1><p>Entre com a conta Google da administração.</p><div class="row"><button class="btn pri" id="go">Entrar com Google</button></div><p class="err small">' + h(msg || '') + '</p>';
+    document.getElementById('go').onclick = function () { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function () { login('Não foi possível entrar.'); }); };
+  }
+  function status(s) {
+    var now = Date.now();
+    if (!(s.until > now)) return ['Vencida', 'bad'];
+    if (s.trial) return ['Teste grátis', 'warn'];
+    return s.until - now < 5 * DAY ? ['Vence em breve', 'warn'] : ['Em dia', 'ok'];
+  }
+  function draw() {
+    var now = Date.now(), paid = subs.filter(function (s) { return !s.trial && s.until > now; }).length;
+    var trial = subs.filter(function (s) { return s.trial && s.until > now; }).length, late = subs.length - paid - trial;
+    var list = subs.filter(function (s) { return !q || (s.email || '').toLowerCase().indexOf(q) >= 0; })
+      .sort(function (a, b) { return (a.until || 0) - (b.until || 0); });
+    root.innerHTML = '<div class="head"><h1>Assinaturas</h1><button class="btn sm ghost" id="out">Sair</button></div>' +
+      '<div class="kpis"><div class="kpi"><b>' + paid + '</b><span>Pagantes em dia</span></div><div class="kpi"><b>' + trial + '</b><span>Em teste grátis</span></div>' +
+      '<div class="kpi"><b>' + late + '</b><span>Vencidas</span></div><div class="kpi"><b>' + C.money(paid * C.billing.price) + '</b><span>Receita mensal (estimada)</span></div></div>' +
+      '<input type="search" id="q" placeholder="Buscar por e-mail" aria-label="Buscar por e-mail" value="' + h(q) + '">' +
+      '<div class="list">' + (list.length ? list.map(function (s) {
+        var st = status(s);
+        return '<div class="item"><div class="main"><b>' + h(s.email || s.id) + '</b><span class="small muted">Válida até ' + dmy(s.until) + (s.paidAt ? ' · último pagamento ' + dmy(s.paidAt) : '') + '</span></div>' +
+          '<div class="row"><span class="chip ' + st[1] + '">' + st[0] + '</span>' +
+          '<button class="btn sm pri" data-id="' + s.id + '" data-d="30">+1 mês</button><button class="btn sm" data-id="' + s.id + '" data-d="365">+1 ano</button>' +
+          '<button class="btn sm dan" data-id="' + s.id + '" data-d="0">Encerrar</button></div></div>';
+      }).join('') : '<p class="empty">Nenhuma assinatura ainda. Elas aparecem quando alguém cria a conta.</p>') + '</div>' +
+      '<p class="small muted">"+1 mês" soma 30 dias a partir do vencimento (ou de hoje, se já venceu). Daqui não é possível ver prontuários nem pacientes: eles são cifrados no aparelho de cada profissional.</p>';
+    document.getElementById('out').onclick = function () { auth.signOut(); };
+    var qi = document.getElementById('q'); qi.oninput = function () { q = qi.value.toLowerCase().trim(); draw(); document.getElementById('q').focus(); };
+  }
+  root.addEventListener('click', async function (e) {
+    var b = e.target.closest('[data-d]'); if (!b) return;
+    var s = subs.find(function (x) { return x.id === b.dataset.id; }), d = +b.dataset.d, now = Date.now();
+    var patch = d ? { until: Math.max(s.until || 0, now) + d * DAY, trial: false, paidAt: now } : { until: now - 1000 };
+    if (!d && !confirm('Encerrar a assinatura de ' + s.email + '? Os dados dela continuam legíveis para ela.')) return;
+    b.disabled = true;
+    try { await fs.doc('subs/' + s.id).set(patch, { merge: true }); Object.assign(s, patch); draw(); }
+    catch (x) { alert('Não foi possível salvar: ' + (x.code || x.message)); b.disabled = false; }
+  });
+  auth.onAuthStateChanged(async function (u) {
+    if (!u) return login();
+    if (ADM.indexOf(String(u.email).toLowerCase()) < 0) return login('A conta ' + u.email + ' não é da administração.');
+    try {
+      var snap = await fs.collection('subs').get();
+      subs = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); }); draw();
+    } catch (x) { login('Sem permissão para ler as assinaturas. Confira os e-mails em firestore.rules.'); }
+  });
+})();
+</script>
+</body></html>
