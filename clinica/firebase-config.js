@@ -23,9 +23,9 @@ window.BILLING = {
     essencial: { name: "Essencial", price: 99, perks: ["Agenda e página de agendamento", "Prontuário cifrado com evolução ditada", "Documentos com timbre", "Financeiro com PIX e recibo"] },
     premium: { name: "Premium", price: 349, perks: ["Tudo do Essencial", "Relatório financeiro do consultório", "Revisão trimestral de 50 min com a Casal das Cifra$", "Dúvidas financeiras pelo WhatsApp"] }
   },
-  pixType: "email",
-  pixKey: "",
-  pixName: "O Casal das Cifras",
-  pixCity: "",
+  pixType: "cnpj",
+  pixKey: "65479517000150",
+  pixName: "Thalita Aladio Lopes",
+  pixCity: "Itumbiara",
   whatsapp: ""
 };

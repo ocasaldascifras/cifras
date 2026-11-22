@@ -7,7 +7,7 @@
 
 | Item | Preenchimento |
 |---|---|
-| Agente | [RAZÃO SOCIAL], CNPJ [CNPJ] |
+| Agente | [RAZÃO SOCIAL], CNPJ 65.479.517/0001-50 |
 | Papel | Controladora dos dados de profissionais; operadora dos dados de pacientes |
 | Encarregado | [NOME DO ENCARREGADO] · [E-MAIL DO ENCARREGADO] |
 | Responsáveis pela elaboração | Thalita Aládio e Bruna Fernandes, sócias |
