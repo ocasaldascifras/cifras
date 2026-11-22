@@ -10,6 +10,8 @@
   C.appName = window.APP_NAME || 'Psifra$';
   C.tagline = window.APP_TAGLINE || 'Seu consultório cifrado. Suas contas em dia.';
   C.maker = 'da Casal das Cifra$';
+  C.termsVersion = '1.0';
+  C.legalLinks = '<a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a>, <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a> e <a href="contrato-operador.html" target="_blank" rel="noopener">Contrato de Operador</a>';
   /* Assinatura: valores em firebase-config.js (window.BILLING). */
   C.billing = Object.assign({ trialDays: 14, pixType: 'email', pixKey: '', pixName: '', pixCity: '', whatsapp: '' }, window.BILLING || {});
   C.billing.plans = Object.assign({

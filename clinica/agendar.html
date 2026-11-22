@@ -62,7 +62,7 @@
       '<label><span>E-mail (opcional)</span><input name="email" type="email" autocomplete="email"></label>' +
       (P.mode === 'ambos' ? '<label><span>Como prefere?</span><select name="mode"><option value="online">On-line (vídeo)</option><option value="presencial">Presencial</option></select></label>' : '') +
       '<label><span>Quer deixar um recado? (opcional)</span><textarea name="msg" rows="3" style="min-height:80px" maxlength="500"></textarea></label>' +
-      '<label class="check"><input type="checkbox" name="ok" required> <span class="small">Autorizo o uso destes dados para agendamento e contato. Eles seguem criptografados direto para o(a) profissional.</span></label>' +
+      '<label class="check"><input type="checkbox" name="ok" required> <span class="small">Autorizo o uso destes dados para agendamento e contato. Eles seguem criptografados direto para o(a) profissional, que é responsável por eles. <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>' +
       '<button class="btn pri">Pedir agendamento</button><p id="err" class="small err" role="alert"></p></form>';
   }
   async function book(e) {
@@ -110,5 +110,5 @@
   load().catch(function (e) { console.error(e); fail('Não foi possível carregar a agenda. Verifique sua conexão.'); });
 })();
 </script>
-<footer class="pub-foot"><span class="logo">Psifra$</span> <span>· agenda e prontuário cifrados para consultórios</span></footer>
+<footer class="pub-foot"><span class="logo">Psifra$</span> <span>· agenda e prontuário cifrados para consultórios · <a href="privacidade.html">Privacidade</a></span></footer>
 </body></html>

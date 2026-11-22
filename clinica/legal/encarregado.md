@@ -1,0 +1,32 @@
+# Termo de Designação do Encarregado pelo Tratamento de Dados Pessoais
+
+> **Minuta para revisão jurídica.** Assinar em duas vias e guardar com os documentos societários. A identidade e o contato do encarregado devem aparecer na Política de Privacidade (art. 41, § 1º, da LGPD).
+
+[RAZÃO SOCIAL], inscrita no CNPJ sob o nº [CNPJ], com sede em [ENDEREÇO COMPLETO], neste ato representada por suas sócias, **designa** como Encarregado(a) pelo Tratamento de Dados Pessoais, nos termos do art. 41 da Lei nº 13.709/2018 e da Resolução CD/ANPD nº 18/2024:
+
+**Nome:** [NOME COMPLETO]
+**CPF:** [CPF]
+**Canal de contato público:** [E-MAIL DO ENCARREGADO] (recomendado: um endereço exclusivo, como privacidade@[domínio])
+
+## Atribuições
+
+1. Receber reclamações e comunicações de titulares, prestar esclarecimentos e adotar providências, respondendo em até 15 dias;
+2. Receber comunicações da Autoridade Nacional de Proteção de Dados (ANPD) e adotar providências;
+3. Orientar sócias e colaboradores sobre as práticas de proteção de dados;
+4. Coordenar o Plano de Resposta a Incidentes e manter o registro de incidentes;
+5. Manter atualizados o RIPD, o registro das operações de tratamento (art. 37) e a lista de suboperadores;
+6. Encaminhar aos profissionais (controladores), em até 5 dias úteis, pedidos de pacientes recebidos pela Casal das Cifra$.
+
+## Condições
+
+- O(A) encarregado(a) atua com autonomia técnica, recebe os recursos necessários e reporta-se diretamente às sócias.
+- O(A) encarregado(a) não pode acumular funções que gerem conflito de interesse com a fiscalização do tratamento de dados.
+- Em ausências superiores a 15 dias, atua como substituto(a): [NOME DO SUBSTITUTO], [CONTATO].
+
+[CIDADE], [DATA].
+
+______________________________
+[RAZÃO SOCIAL] (representante legal)
+
+______________________________
+[NOME DO ENCARREGADO] (ciente e de acordo)

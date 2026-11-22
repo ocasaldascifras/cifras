@@ -142,7 +142,8 @@
       '<button class="btn pri" data-a="login">Entrar com Google</button>' +
       '<p class="small">' + C.billing.trialDays + ' dias grátis para testar. Depois, a partir de ' + C.money(C.billing.plans.essencial.price) + ' por mês.</p>' +
       '<p class="small muted">Os prontuários são cifrados no seu aparelho com uma frase secreta que só você sabe. Nem a administração do sistema consegue ler.</p>' +
-      '<p id="msg" class="small err" role="alert"></p></div></div>');
+      '<p id="msg" class="small err" role="alert"></p>' +
+      '<p class="small muted"><a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="privacidade.html" target="_blank" rel="noopener">Privacidade</a></p></div></div>');
   }
   function setupScreen() {
     screen('<div class="center"><div class="box">' +
@@ -153,6 +154,7 @@
       '<label><span>Frase secreta (mínimo 12 caracteres)</span><input name="p1" type="password" minlength="12" required autocomplete="new-password"></label>' +
       '<label><span>Repita a frase</span><input name="p2" type="password" minlength="12" required autocomplete="new-password"></label>' +
       '<p class="small muted">Dica: use 3 ou 4 palavras soltas, como "janela azul do sábado".</p>' +
+      '<label class="check"><input type="checkbox" name="terms" required> <span class="small">Li e aceito os ' + C.legalLinks + '. Sou profissional de saúde habilitado(a) e controlador(a) dos dados dos meus pacientes.</span></label>' +
       '<button class="btn pri">Criar meu cofre</button><p id="msg" class="small err" role="alert"></p></form>' +
       '<button class="btn ghost sm" data-a="logout">Sair (' + h(S.user.email) + ')</button></div></div>');
   }
@@ -177,6 +179,13 @@
     S.key = v.key; S.priv = v.priv; S.dek = v.dek;
     await loadSub();
     S.tab = S.tab || 'agenda'; render(); startSync(); if (subActive()) cleanupBusy(); bumpIdle();
+    if (!S.pro.terms || S.pro.terms.v !== C.termsVersion) termsSheet();
+  }
+  function termsSheet() {
+    openSheet('Documentos atualizados', '<div class="stack"><p>Para continuar usando o ' + h(C.appName) + ', leia e aceite os documentos abaixo.</p>' +
+      '<p>' + C.legalLinks + '</p>' +
+      '<p class="small muted">Em resumo: você é a controladora dos dados dos seus pacientes e nós somos operadora. Seus prontuários seguem cifrados e ilegíveis para nós.</p>' +
+      '<button class="btn pri" data-a="terms-ok">Li e aceito</button></div>');
   }
 
   /* ---------------- assinatura ----------------
@@ -898,6 +907,7 @@
     login: function () { var m = $('#msg'); if (m) m.textContent = ''; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function (e) { if (m) m.textContent = e.code === 'auth/unauthorized-domain' ? 'Este endereço não está autorizado no Firebase (passo 6 do LEIA-ME).' : 'Não foi possível entrar. Tente de novo.'; }); },
     logout: function () { lock(true); auth.signOut(); },
     lock: function () { lock(); },
+    'terms-ok': async function () { var t = { v: C.termsVersion, at: Date.now() }; await savePro({ terms: t }); closeSheet(); toast('Aceite registrado.'); },
     sub: function (id) { subSheet(id); }, 'sub-plan': function (id) { subSheet(id); }, report: printReport,
     'unlock-rec': function () { unlockScreen(true); }, 'unlock-pass': function () { unlockScreen(false); },
     tab: function (id) { S.tab = id; if (id !== 'pacientes') S.pid = null; if (id === 'pacientes' && S.tab === id) S.pid = null; render(); scrollTo(0, 0); },
@@ -954,8 +964,9 @@
       try {
         var r = await C.vaultCreate(v.p1);
         var c = { name: S.user.displayName || '', email: S.user.email || '', tz: -180 };
-        await fs.doc('pros/' + uid()).set({ vault: r.vault, cfg: c, created: Date.now() }, { merge: true });
-        S.pro = Object.assign(S.pro || {}, { vault: r.vault, cfg: c });
+        var terms = { v: C.termsVersion, at: Date.now() };
+        await fs.doc('pros/' + uid()).set({ vault: r.vault, cfg: c, created: Date.now(), terms: terms }, { merge: true });
+        S.pro = Object.assign(S.pro || {}, { vault: r.vault, cfg: c, terms: terms });
         screen('<div class="center"><div class="box"><h1 class="brand">Guarde este código</h1>' +
           '<p>É o único jeito de abrir seus prontuários se você esquecer a frase secreta. Anote em papel ou guarde no seu gerenciador de senhas.</p>' +
           '<div class="code" id="rec">' + h(r.rec) + '</div><button class="btn" data-a="copy" data-id="' + h(r.rec) + '">Copiar código</button>' +

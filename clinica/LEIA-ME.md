@@ -92,6 +92,21 @@ Pronto. Qualquer profissional entra pelo endereço do painel com a conta Google 
 
 **Antes de abrir ao público:** termos de uso, política de privacidade, contrato de operador, relatório de impacto (RIPD), encarregado nomeado e plano de resposta a incidente revisados por uma advogada de proteção de dados.
 
+## Documentos jurídicos (minutas para revisão)
+
+| Documento | Arquivo | Onde fica |
+|---|---|---|
+| Termos de Uso | `termos.html` | Público, aceito na criação da conta |
+| Política de Privacidade | `privacidade.html` | Público, link na entrada e na página do paciente |
+| Contrato de Operador | `contrato-operador.html` | Público, aceito na criação da conta |
+| Relatório de Impacto (RIPD) | `legal/RIPD.md` | Interno |
+| Designação do encarregado | `legal/encarregado.md` | Interno, assinar |
+| Plano de resposta a incidente | `legal/plano-incidente.md` | Interno, imprimir |
+
+**Antes de publicar,** preencham os trechos entre [colchetes] (razão social, CNPJ, endereço, encarregado, e-mail de privacidade, datas) e passem tudo por uma advogada de proteção de dados. Tirem o aviso "Minuta" do topo das páginas públicas só depois da revisão.
+
+**Aceite registrado.** A profissional marca o aceite ao criar o cofre. A versão (`C.termsVersion` em `core.js`) e a data ficam gravadas na conta. Quando mudarem os documentos, aumentem a versão: todas as profissionais verão o pedido de novo aceite ao abrir o sistema.
+
 ## Limites e cuidados (leia antes de divulgar)
 
 - **Plano gratuito do Firebase:** 50 mil leituras e 20 mil gravações por dia. Cada vez que o profissional abre o painel, todos os registros dele são lidos. Na prática dá para algumas dezenas de profissionais ativos. Acima disso, ative o plano Blaze (paga só o excedente, centavos por 100 mil leituras) e configure um alerta de orçamento.
